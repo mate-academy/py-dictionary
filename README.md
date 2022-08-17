@@ -10,7 +10,7 @@ Let's create your own class `Dictionary` and implement methods:
 
 Be attentive to basic requirements for the implementation of the dictionary (initial capacity, load factor, resize ...)
 
-Also, not forgot to store `(key, hash, value)` as node in hash table.
+Also, not forgot to store `(key, hash, value)` as node in hash table. Hash table may be stored as simple list of nodes.
 
 Notes: 
 - you can implement other methods of the dict interface (both regular and magic):
@@ -21,3 +21,4 @@ Notes:
   - `update`
   - `__iter__`
 - you can test `Dictionary` with custom class `Point` that has `__hash__` and `__eq__` magic methods.
+- do not use built-in `dict` to implement this task.

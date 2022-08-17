@@ -1,7 +1,7 @@
 # Custom dict
 
-- Read [the guideline](https://github.com/mate-academy/py-task-guideline/blob/main/README.md) before start
-
+**Please note:** read [the guideline](https://github.com/mate-academy/py-task-guideline/blob/main/README.md)
+before starting.
 
 Let's create your own class `Dictionary` and implement methods:
 - `__setitem__(self, key, value)` 
@@ -12,7 +12,7 @@ Be attentive to basic requirements for the implementation of the dictionary (ini
 
 Also, not forgot to store `(key, hash, value)` as node in hash table. Hash table may be stored as simple list of nodes.
 
-Notes: 
+**Notes**: 
 - you can implement other methods of the dict interface (both regular and magic):
   - `clear`
   - `__delitem__`
@@ -20,5 +20,6 @@ Notes:
   - `pop`
   - `update`
   - `__iter__`
-- you can test `Dictionary` with custom class `Point` that has `__hash__` and `__eq__` magic methods.
-- do not use built-in `dict` to implement this task.
+- you can test `Dictionary` with custom class `Point` that has `__hash__` and `__eq__` magic methods;
+- **do not use built-in `dict` to implement this task**.
+

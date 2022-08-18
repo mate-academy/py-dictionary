@@ -112,3 +112,13 @@ def test_missing_key():
     dictionary = Dictionary()
     with pytest.raises(KeyError):
         dictionary["missing_key"]
+
+
+def test_is_custom_dict():
+    dictionary = Dictionary()
+    is_dict = False
+    for attr in dictionary.__dict__:
+        if type(dictionary.__getattribute__(attr)) == dict:
+            is_dict = True
+    assert not is_dict, \
+        f"You should implement custom dictionary not using built-in dict!!!"

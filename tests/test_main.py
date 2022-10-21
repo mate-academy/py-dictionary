@@ -83,8 +83,63 @@ from app.point import Point
         ),
     ],
 )
+def test_dictionary_add(items: list, pairs_after_adding: list):
+
+    dictionary = Dictionary()
+    for key, value in items:
+        dictionary[key] = value
+
+    for key, value in pairs_after_adding:
+        assert dictionary[key] == value
+    assert len(dictionary) == len(pairs_after_adding)
+
+
+@pytest.mark.parametrize(
+    "items,pairs_after_adding",
+    [
+        pytest.param([], [], id="empty dictionary should have len equal to 0"),
+        pytest.param(
+            [(1, "one"), (2, "two"), (3, "tree"), (4, "four")],
+            [(1, "one"), (2, "two"), (3, "tree"), (4, "four")],
+            id="integers can be used as keys",
+        ),
+        pytest.param(
+            [
+                (Point(0, 0), "origin"),
+                (Point(10, 10), "A"),
+                (Point(-10, 10), "B"),
+                (Point(0, 5), "C"),
+            ],
+            [
+                (Point(0, 0), "origin"),
+                (Point(10, 10), "A"),
+                (Point(-10, 10), "B"),
+                (Point(0, 5), "C"),
+            ],
+            id="Custom hashable classes can be used as keys",
+        ),
+        pytest.param(
+            [
+                (8, "8"),
+                (16, "16"),
+                (32, "32"),
+                ("one", 1),
+                ("one", 11),
+            ],
+            [
+                (8, "8"),
+                (16, "16"),
+                (32, "32"),
+                ("one", 11),
+            ],
+            id="the value should be reassigned when the key already exists",
+        ),
+    ],
+)
 @mock.patch("app.main.hash")
-def test_dictionary_add(mock_hash: mock, items: list, pairs_after_adding: list):
+def test_dictionary_add_with_mocked_hash(
+    mock_hash: mock, items: list, pairs_after_adding: list
+):
     mock_hash.return_value = 3
 
     dictionary = Dictionary()
@@ -120,5 +175,6 @@ def test_is_custom_dict():
     for attr in dictionary.__dict__:
         if type(dictionary.__getattribute__(attr)) == dict:
             is_dict = True
-    assert not is_dict, \
-        f"You should implement custom dictionary not using built-in dict!!!"
+    assert (
+        not is_dict
+    ), f"You should implement custom dictionary not using built-in dict!!!"

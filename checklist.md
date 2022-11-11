@@ -2,16 +2,19 @@
 
 ## Code Style
 
-Make sure that you provide message when exception rises.
+Make sure that you provide message when exception raises.
 
 ## Code Efficiency
 
-### Make sure that your methods work with **O(1)** time complexity.
+Make sure that your methods work with 
+**O(1)** time complexity in the best variant and 
+**O(n)** i the worst (because of collision handling).
 
 The exceptions:
-- `__init__` and `clear` methods 
-- handling the collision in any method
-- resizing the dictionary
+- `__init__` and `clear` methods alvays have O(n) time complexity
+- resizing the dictionary works with
+**O(n)** time complexity in the best variant and 
+**O(n^2)** i the worst (because of collision handling).
 
 Bad example:
 
@@ -24,7 +27,25 @@ class Dictionary:
         return len([cell for cell in self.hash_table if cell])
 ```
 
+Good example:
+
+
+```python
+class Dictionary:
+    def __init__(self) -> None:
+        self.length = 0
+        self.hash_table: list = [None] * 8
+        
+    # in any method that add or delete item we change self.length
+
+    def __len__(self) -> int:
+        return self.length
+```
+
 **Note:** any loop have O(n) time complexity (list comprehension is also a loop)
+
+If you want check your `__delitem__` method 
+uncomment `test_deletion():` test in `/tests/test_main.py`
 
 ## Clean Code
 

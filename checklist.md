@@ -6,7 +6,7 @@ Make sure that you provide message when exception raises.
 
 ## Code Efficiency
 
-Make sure that your methods work with 
+1) Make sure that your methods work with 
 **O(1)** time complexity in the best variant and 
 **O(n)** i the worst (because of collision handling).
 
@@ -16,16 +16,6 @@ The exceptions:
 **O(n)** time complexity in the best variant and 
 **O(n^2)** i the worst (because of collision handling).
 
-Bad example:
-
-```python
-class Dictionary:
-    def __init__(self) -> None:
-        self.hash_table: list = [None] * 8
-
-    def __len__(self) -> int:
-        return len([cell for cell in self.hash_table if cell])
-```
 
 Good example:
 
@@ -42,10 +32,25 @@ class Dictionary:
         return self.length
 ```
 
-**Note:** any loop have O(n) time complexity (list comprehension is also a loop)
+Bad example:
 
-If you want check your `__delitem__` method 
+```python
+class Dictionary:
+    def __init__(self) -> None:
+        self.hash_table: list = [None] * 8
+
+    def __len__(self) -> int:
+        return len([cell for cell in self.hash_table if cell])
+```
+
+**Note:** loops have O(n) time complexity, 
+but can achieve O(1) in the best case 
+(list comprehension is also a loop)
+
+2) If you want check your `__delitem__` method 
 uncomment `test_deletion():` test in `./tests/test_main.py`
+
+**Note:** `__delitem__` should return nothing.
 
 ## Clean Code
 

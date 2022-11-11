@@ -45,7 +45,7 @@ class Dictionary:
 **Note:** any loop have O(n) time complexity (list comprehension is also a loop)
 
 If you want check your `__delitem__` method 
-uncomment `test_deletion():` test in `/tests/test_main.py`
+uncomment `test_deletion():` test in `./tests/test_main.py`
 
 ## Clean Code
 

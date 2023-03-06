@@ -98,7 +98,6 @@ from app.point import Point
     ],
 )
 def test_dictionary_add(items: list, pairs_after_adding: list):
-
     dictionary = Dictionary()
     for key, value in items:
         dictionary[key] = value

@@ -26,3 +26,6 @@ class Point:
     @property
     def y(self) -> float:
         return self._y
+
+    def have_same_elements(self, list1: Any, list2: Any) -> bool:
+        return all(element in list1 for element in list2)

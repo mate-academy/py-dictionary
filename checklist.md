@@ -2,7 +2,7 @@
 
 ## Code Style
 
-Make sure that you provide message when exception raises.
+Make sure that you provide a message when an exception raises.
 
 ## Code Efficiency
 
@@ -11,7 +11,7 @@ Make sure that you provide message when exception raises.
 **O(n)** i the worst (because of collision handling).
 
 The exceptions:
-- `__init__` and `clear` methods alvays have O(n) time complexity
+- `__init__` and `clear` methods always have O(n) time complexity
 - resizing the dictionary works with
 **O(n)** time complexity in the best variant and 
 **O(n^2)** i the worst (because of collision handling).
@@ -26,7 +26,7 @@ class Dictionary:
         self.length = 0
         self.hash_table: list = [None] * 8
         
-    # in any method that add or delete item we change self.length
+    # in any method that add or delete an item we change self.length
 
     def __len__(self) -> int:
         return self.length

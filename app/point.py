@@ -6,6 +6,9 @@ class Point:
         self._x = x
         self._y = y
 
+    def __repr__(self) -> str:
+        return f"Point({self.x}, {self.y})"
+
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Point):
             return False

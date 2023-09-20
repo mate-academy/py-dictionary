@@ -26,3 +26,6 @@ class Point:
     @property
     def y(self) -> float:
         return self._y
+
+    def __repr__(self) -> object:
+        return f"Point ({self._x}, {self._y})"

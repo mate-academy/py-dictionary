@@ -87,7 +87,7 @@ class Dictionary:
                 self.order.remove(key)
                 return
 
-            index = index + 1 % self.initial_size
+            index = (index + 1) % self.initial_size
 
         raise KeyError(f"Key '{key}' not found")
 

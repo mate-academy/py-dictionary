@@ -9,7 +9,7 @@ class Dictionary:
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
         hash_item = hash(key)
-        if int(self.capacity * 2 / 3) == self.length:
+        if int(self.capacity * float(2 / 3)) == self.length:
             temp = [element for element in self.hash_table if element]
             self.capacity *= 2
             self.hash_table = [None] * self.capacity

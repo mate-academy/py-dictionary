@@ -54,7 +54,7 @@ class Dictionary:
             if item is not None:
                 self[item[1]] = item[2]
 
-    def get(self, item: Any, option_oper: None = None) -> Any:
+    def get(self, item: Any, option_oper: Any = None) -> Any:
         hash_key = hash(item)
         key_index = hash_key % len(self.hash_table)
 
@@ -113,7 +113,7 @@ class Dictionary:
 
             next_index = (next_index + 1) % len(self.hash_table)
 
-    def pop(self, key: Any, default: Any = None) -> None:
+    def pop(self, key: Any, default: Any = None) -> Any:
         hash_key = hash(key)
         key_index = hash_key % len(self.hash_table)
 

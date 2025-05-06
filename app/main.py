@@ -47,8 +47,10 @@ class Dictionary:
     def _resize(self) -> None:
         old_data = self._data
         self.capacity *= 2
-        self.size = 0
         self._data = [None] * self.capacity
         for node in old_data:
             if node is not None:
-                self.__setitem__(node.key, node.value)
+                index = node.hash % self.capacity
+                while self._data[index] is not None:
+                    index = (index + 1) % self.capacity
+                self._data[index] = node

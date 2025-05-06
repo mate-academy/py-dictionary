@@ -7,8 +7,10 @@ class Node:
         self.value = value
         self.hash = hash(key)
 
+
 class Dictionary:
-    def __init__(self, default_capacity=8, load_factor=0.66):
+    def __init__(self, default_capacity: int = 8,
+                 load_factor: float = 0.66) -> None:
         self.capacity = default_capacity
         self.load_factor = load_factor
         self.size = 0
@@ -29,7 +31,6 @@ class Dictionary:
         self._data[index] = Node(key, value)
         self.size += 1
 
-
     def __getitem__(self, key: Any) -> Any:
         h = hash(key)
         index = h % self.capacity
@@ -43,7 +44,7 @@ class Dictionary:
     def __len__(self) -> int:
         return self.size
 
-    def _resize(self):
+    def _resize(self) -> None:
         old_data = self._data
         self.capacity *= 2
         self.size = 0
@@ -51,4 +52,3 @@ class Dictionary:
         for node in old_data:
             if node is not None:
                 self.__setitem__(node.key, node.value)
-

@@ -77,6 +77,7 @@ class Dictionary:
 
     def clear(self) -> None:
         self.hash_table: list = [None] * self.capacity
+        self.length = 0
 
     def __delitem__(self, key: type | str | int | float | tuple) -> None:
         hash_key = hash(key)
@@ -87,6 +88,7 @@ class Dictionary:
             if (self.hash_table[index] and self.hash_table[index][0] == key
                     and self.hash_table[index][1] == hash_key):
                 self.hash_table[index] = None
+                self.length -= 1
                 break
             if index == end:
                 raise KeyError(key)

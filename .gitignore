@@ -1,8 +1,18 @@
-.idea/
-.vscode/
-*.iml
+# Created by https://www.toptal.com/developers/gitignore/api/python
+# Edit at https://www.toptal.com/developers/gitignore?templates=python
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+.idea
 .env
-.DS_Store
+.venv
+env/
 venv/
-.pytest_cache/
-**__pycache__/
+ENV/
+env.bak/
+venv.bak/
+Lib**
+Scripts**
+pyvenv.cfg**
+

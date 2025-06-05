@@ -2,14 +2,13 @@ from typing import Hashable, Any
 
 
 class Dictionary:
-    def __init__(self, capacity: int = 8, load_factor: float = 2/3) ->None:
+    def __init__(self, capacity: int = 8, load_factor: float = 2 / 3) -> None:
         self.capacity = capacity
         self.load_factor = load_factor
         self.table = [None] * capacity
         self.size = 0
 
-
-    def resize(self, ):
+    def resize(self) -> None:
         old_table = self.table
         self.capacity *= 2
         self.clear()
@@ -18,15 +17,12 @@ class Dictionary:
                 self.__setitem__(data[0], data[1])
         del old_table
 
-
     def clear(self) -> None:
         self.table = [None] * self.capacity
         self.size = 0
 
-
     def index_element(self, key: Hashable) -> int:
         return hash(key) % self.capacity
-
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
         index = self.index_element(key)
@@ -38,15 +34,13 @@ class Dictionary:
         if self.size >= self.capacity:
             self.resize()
 
-
-    def __getitem__(self, key):
+    def __getitem__(self, key: Hashable) -> Any:
         index = self.index_element(key)
         while self.table[index] is not None:
             if self.table[index][0] == key:
                 return self.table[index][1]
             index = (index + 1) % self.capacity
         raise KeyError(f"Key {key} not found")
-
 
     def __delitem__(self, key: Hashable) -> None:
         index = self.index_element(key)
@@ -59,5 +53,5 @@ class Dictionary:
                 return
         raise KeyError(f"Key {key} not found")
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.size

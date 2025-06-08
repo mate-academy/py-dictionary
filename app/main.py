@@ -35,3 +35,17 @@ class Dictionary:
 
     def __len__(self) -> int:
         return self.size
+
+
+class Point:
+    def __init__(self, x: int, y: int) -> None:
+        self.x = x
+        self.y = y
+
+    def __hash__(self) -> int:
+        return hash((self.x, self.y))
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Point):
+            return False
+        return self.x == other.x and self.y == other.y

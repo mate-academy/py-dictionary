@@ -22,7 +22,7 @@ class Dictionary:
                     return
             self.table[index].append((key, value))
 
-        self.size += 1("sdafsg")
+        self.size += 1
 
     def __getitem__(self, key: Any) -> Any:
         index = self._hash(key)

@@ -5,12 +5,9 @@ class Dictionary:
     def __init__(self, size: int = 8) -> None:
         self.data_storage = [[] for _ in range(size)]
         self.size = size
-        self.key = None
-        self.value = None
 
     def resize_check(self) -> int:
-        return sum(bool(element) for element in
-                   self.data_storage) / self.size >= 2 / 3
+        return len(self) / self.size >= 2 / 3
 
     def __len__(self) -> int:
         return sum(len(element) for element

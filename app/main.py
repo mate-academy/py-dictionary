@@ -1,5 +1,6 @@
 from typing import Any
 
+
 class Node:
     def __init__(self, key: Any, value: Any) -> None:
         self.key = key
@@ -24,5 +25,5 @@ class Dictionary:
                 return node.value
         raise KeyError(f"Key {key} not found")
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.data)

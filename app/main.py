@@ -48,8 +48,9 @@ class Dictionary:
         old_buckets = self.buckets
         self.capacity *= 2
         self.buckets = [[] for _ in range(self.capacity)]
-        self.size = 0  # will be re-added
+        # Do NOT reset self.size here — we’ll manually rebuild
 
         for bucket in old_buckets:
             for node in bucket:
-                self[node.key] = node.value
+                index = node.hash % self.capacity
+                self.buckets[index].append(node)

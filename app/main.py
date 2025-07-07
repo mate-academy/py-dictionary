@@ -34,7 +34,7 @@ class Dictionary:
         for key, value in self.hash_table[index]:
             if key == item:
                 return value
-        raise KeyError(f"Key \"{item}\" not found in the dictionary")
+        raise KeyError(f"Key '{item}' not found in the dictionary")
 
     def __len__(self) -> int:
         return self.count_el
@@ -50,7 +50,7 @@ class Dictionary:
                 del self.hash_table[index][indx]
                 self.count_el -= 1
                 return
-        raise KeyError(f"Key \"{key}\" not found in the dictionary")
+        raise KeyError(f"Key '{key}' not found in the dictionary")
 
     def get(self, key: Any, default: Any = None) -> Any:
         try:

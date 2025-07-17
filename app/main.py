@@ -58,6 +58,7 @@ class Dictionary:
         for i, (_key, _value) in enumerate(table):
             if _key == key:
                 del table[i]
+                self.size -= 1
                 return _value
 
         if default is not None:

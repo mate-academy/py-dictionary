@@ -185,7 +185,7 @@ class Dictionary:
         except KeyError:
             return default_value
 
-    def pop(self, key: Any, default: NoneItem | None = NONE) -> Any:
+    def pop(self, key: Any, default: NoneItem | Any = NONE) -> Any:
         try:
             item = self[key]
             del self[key]

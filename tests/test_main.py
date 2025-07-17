@@ -1,3 +1,4 @@
+import random
 from unittest import mock
 
 import pytest
@@ -6,15 +7,21 @@ from app.main import Dictionary
 from app.point import Point
 
 
-# @pytest.mark.timeout(5)
-# def test_deletion():
-#     items = [(f"Element {i}", i) for i in range(1000)]
-#     dictionary = Dictionary()
-#     for key, value in items:
-#         dictionary[key] = value
-#     for key, value in items:
-#         assert dictionary[key] == value
-#     assert len(dictionary) == len(items)
+@pytest.mark.timeout(5)
+def test_deletion():
+    items = [(f"Element {i}", i) for i in range(1000)]
+    dictionary = Dictionary()
+    for key, value in items:
+        dictionary[key] = value
+    for key, value in items:
+        assert dictionary[key] == value
+    assert len(dictionary) == len(items)
+    for i in range(0, 1000, 2):
+        del dictionary[f"Element {i}"]
+    assert len(dictionary) == 500
+    for i in range(1, 1000, 4):
+        del dictionary[f"Element {i}"]
+    assert len(dictionary) == 250
 #     for key, value in items:
 #         del dictionary[key]
 #     print(len(dictionary))
@@ -192,3 +199,42 @@ def test_is_custom_dict():
     assert (
         not is_dict
     ), f"You should implement custom dictionary not using built-in dict!!!"
+
+
+def test_ordering_after_repeating_deletion_insertion():
+    keys = [f"Key {i}" for i in range(100)]
+    values = list(range(100))
+    random.shuffle(keys)
+
+    dictionary = Dictionary()
+    dictionary.update(zip(keys, values))
+
+    assert len(dictionary) == len(keys) == 100
+    assert sorted(dictionary) == sorted(keys)
+
+    for key_from_dict, key_from_list in zip(dictionary.keys(), keys):
+        assert key_from_dict == key_from_list
+
+    for _ in range(20):
+        key = random.choice(keys)
+        keys.remove(key)
+        del dictionary[key]
+
+    assert len(dictionary) == len(keys) == 80
+
+    for i in range(100, 110):
+        key = f"Key {i}"
+        keys.append(key)
+        dictionary[key] = i
+
+    assert len(dictionary) == len(keys) == 90
+
+    for _ in range(20):
+        key = random.choice(keys)
+        keys.remove(key)
+        del dictionary[key]
+
+    assert len(dictionary) == len(keys) == 70
+
+    for key_from_dict, key_from_list in zip(dictionary.keys(), keys):
+        assert key_from_dict == key_from_list

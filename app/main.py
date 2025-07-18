@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Any, Iterable, Generator
+from typing import Hashable, Any, Iterable, Generator
 
 
 class DictionaryIterator:
@@ -67,12 +67,12 @@ class NoneItem:
         return cls._instance
 
 
-NONE = NoneItem()
+DELETED = NoneItem()
 
 
 @dataclass
 class Item:
-    key: Any
+    key: Hashable
     hash_key: int
     value: Any
     order_idx: int
@@ -90,7 +90,7 @@ class Dictionary:
         self._load_factor: float = Dictionary.DEFAULT_LOAD_FACTOR
         self._threshold: int = int(self._capacity * self._load_factor)
         self._length: int = 0
-        self._items: list[Item | None] = [None] * self._capacity
+        self._items: list[Item | None | NoneItem] = [None] * self._capacity
         self._order: list = []
 
     def _resize(self) -> None:
@@ -107,26 +107,33 @@ class Dictionary:
             if idx is not None:
                 self[temp_items[idx].key] = temp_items[idx].value
 
-    def _find_free_index(self, key: Any, hash_key: int) -> int:
-        idx: int = hash_key % self._capacity
-
-        while self._items[idx]:
-            if (
-                self._items[idx] is not NONE
-                and key == self._items[idx].key
-            ):
-                break
-            idx = (idx + 1) % self._capacity
-
-        return idx
-
-    def _find_index(self, key: Any) -> int:
+    def _find_free_index(self, key: Hashable) -> int:
         hash_key = hash(key)
         idx: int = hash_key % self._capacity
 
         while (
-            self._items[idx] is NONE
-            or (self._items[idx] and key != self._items[idx].key)
+            self._items[idx]
+            and self._items[idx] is not DELETED
+            and (
+                hash_key != self._items[idx].hash_key
+                or key != self._items[idx].key
+            )
+        ):
+            idx = (idx + 1) % self._capacity
+
+        return idx
+
+    def _find_index(self, key: Hashable) -> int:
+        hash_key = hash(key)
+        idx: int = hash_key % self._capacity
+
+        while (
+            self._items[idx] is DELETED
+            or (
+                self._items[idx]
+                and (hash_key != self._items[idx].hash_key
+                or key != self._items[idx].key)
+            )
         ):
             idx = (idx + 1) % self._capacity
 
@@ -134,64 +141,63 @@ class Dictionary:
             raise KeyError
         return idx
 
-    def __setitem__(self, key: Any, value: Any) -> None:
-        if self._length >= self._threshold:
-            self._resize()
-
-        hash_key = hash(key)
-        idx: int = self._find_free_index(key, hash_key)
+    def __setitem__(self, key: Hashable, value: Any) -> None:
+        idx: int = self._find_free_index(key)
 
         if self._items[idx]:
             self._items[idx].value = value
             return
 
+        if self._length >= self._threshold:
+            self._resize()
+        idx: int = self._find_free_index(key)
+
         self._length += 1
         self._items[idx] = Item(
             key=key,
-            hash_key=hash_key,
+            hash_key=hash(key),
             value=value,
             order_idx=len(self._order)
         )
         self._order.append(idx)
 
-    def __getitem__(self, key: Any) -> Any:
+    def __getitem__(self, key: Hashable) -> Any:
         idx: int = self._find_index(key)
         return self._items[idx].value
 
     def clear(self) -> None:
-        self._capacity: int = Dictionary.DEFAULT_CAPACITY
-        self._threshold: int = int(self._capacity * self._load_factor)
         self._length = 0
-        self._items: list[Item | None] = [None] * self._capacity
         self._order.clear()
+        for i in range(self._capacity):
+            self._items[i] = None
 
-    def __delitem__(self, key: Any) -> None:
+    def __delitem__(self, key: Hashable) -> None:
         idx: int = self._find_index(key)
         self._length -= 1
         item = self._items[idx]
         self._order[item.order_idx] = None
-        self._items[idx] = NONE
+        self._items[idx] = DELETED
 
-    def __contains__(self, key: Any) -> bool:
+    def __contains__(self, key: Hashable) -> bool:
         try:
             self._find_index(key)
             return True
         except KeyError:
             return False
 
-    def get(self, key: Any, default_value: Any = None) -> Any:
+    def get(self, key: Hashable, default_value: Any = None) -> Any:
         try:
             return self[key]
         except KeyError:
             return default_value
 
-    def pop(self, key: Any, default: NoneItem | Any = NONE) -> Any:
+    def pop(self, key: Hashable, default: NoneItem | Any = DELETED) -> Any:
         try:
             item = self[key]
             del self[key]
             return item
         except KeyError:
-            if default is NONE:
+            if default is DELETED:
                 raise
             return default
 

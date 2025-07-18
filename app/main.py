@@ -7,5 +7,3 @@ class Dictionary:
 
     def __len__(self):
         pass
-
-

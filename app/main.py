@@ -131,8 +131,10 @@ class Dictionary:
             self._items[idx] is DELETED
             or (
                 self._items[idx]
-                and (hash_key != self._items[idx].hash_key
-                or key != self._items[idx].key)
+                and (
+                    hash_key != self._items[idx].hash_key
+                    or key != self._items[idx].key
+                )
             )
         ):
             idx = (idx + 1) % self._capacity

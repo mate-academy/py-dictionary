@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from typing import Hashable, Any
+from typing import Hashable, Any, Optional
 
 
 @dataclass
 class Node:
     key: Hashable
-    hash: int
+    hash_value: int
     value: Any
 
 
@@ -16,40 +16,32 @@ class Dictionary:
     def __init__(self) -> None:
         self.capacity = self.INITIAL_CAPACITY
         self.size = 0
-        self.table = [None] * self.INITIAL_CAPACITY
+        self.table = [None] * self.capacity
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
         if self.size + 1 > self.capacity * self.LOAD_FACTOR:
             self._resize()
 
-        index = self._calculate_index(key)
+        h = hash(key)
+        index = self._calculate_index(key, h)
 
-        if (node := self.table[index]) is None:
-            self.table[index] = Node(key, hash(key), value)
+        node = self.table[index]
+        if node is None:
+            self.table[index] = Node(key, h, value)
             self.size += 1
         else:
             node.value = value
 
-    def _calculate_index(self, key: Hashable) -> int:
-        hash_value = hash(key)
-        index = hash_value % self.capacity
-        while (
-                (node := self.table[index]) is not None
-                and (hash_value != node.hash or key != node.key)
-        ):
-            index = self._linear_probing(index)
-        return index
-
-    def __getitem__(self, key):
-        index = self._calculate_index(key)
-        if (node := self.table[index]) is None:
-            raise KeyError
+    def __getitem__(self, key: Hashable) -> Any:
+        h = hash(key)
+        index = self._calculate_index(key, h)
+        node = self.table[index]
+        if node is None or node.key != key:
+            raise KeyError(key)
         return node.value
 
-
-    def __len__(self):
+    def __len__(self) -> int:
         return self.size
-
 
     def _resize(self) -> None:
         old_table = self.table
@@ -60,6 +52,14 @@ class Dictionary:
             if node is not None:
                 self[node.key] = node.value
 
+    def _calculate_index(self, key: Hashable, hash_value: int) -> int:
+        index = hash_value % self.capacity
+        while (
+                (node := self.table[index]) is not None
+                and (hash_value != node.hash_value or key != node.key)
+        ):
+            index = self._linear_probing(index)
+        return index
 
     def _linear_probing(self, index: int) -> int:
         return (index + 1) % self.capacity

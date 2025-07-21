@@ -36,7 +36,6 @@ class Dictionary:
             else:
                 index = self._linear_probing(index)
 
-
     def __getitem__(self, key: Hashable) -> Any:
         h = hash(key)
         index = self._calculate_index(key, h)

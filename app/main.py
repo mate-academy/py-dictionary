@@ -114,7 +114,7 @@ class Dictionary:
             else:
                 index = (index + 1) % self._capacity
 
-    def pop(self, item: Hashable) -> Dictionary:
+    def pop(self, item: Hashable) -> Any:
         index = hash(item) % self._capacity
         while True:
             if self._hash_table[index] is None:

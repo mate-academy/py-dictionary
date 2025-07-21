@@ -24,13 +24,18 @@ class Dictionary:
 
         h = hash(key)
         index = self._calculate_index(key, h)
+        while True:
+            node = self.table[index]
+            if node is None:
+                self.table[index] = Node(key, h, value)
+                self.size += 1
+                return
+            elif node.key == key:
+                node.value = value
+                return
+            else:
+                index = self._linear_probing(index)
 
-        node = self.table[index]
-        if node is None:
-            self.table[index] = Node(key, h, value)
-            self.size += 1
-        else:
-            node.value = value
 
     def __getitem__(self, key: Hashable) -> Any:
         h = hash(key)

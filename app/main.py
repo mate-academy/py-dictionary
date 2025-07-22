@@ -69,8 +69,10 @@ class Dictionary:
 
     def get(self, key: Any, default_value: Any = None) -> Any:
         idx = self._get_index(key)
-        if self.hash_table[idx]:
-            return self.hash_table[idx].value
+        while self.hash_table[idx]:
+            if self.hash_table[idx].key == key:
+                return self.hash_table[idx].value
+            idx = (idx + 1) % self.capacity
         return default_value
 
     def clear(self) -> None:
@@ -79,11 +81,14 @@ class Dictionary:
 
     def pop(self, key: Any, default_value: object = object()) -> Any:
         idx = self._get_index(key)
-        if self.hash_table[idx]:
-            value = self.hash_table[idx].value
-            self.hash_table[idx] = None
-            self.length -= 1
-            return value
-        elif default_value is not self.pop.__defaults__[0]:
+        while self.hash_table[idx]:
+            if self.hash_table[idx].key == key:
+                value = self.hash_table[idx].value
+                self.hash_table[idx] = None
+                self.length -= 1
+                return value
+            idx = (idx + 1) % self.capacity
+
+        if default_value is not self.pop.__defaults__[0]:
             return default_value
         raise KeyError(key)

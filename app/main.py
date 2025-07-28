@@ -12,15 +12,15 @@ class Dictionary:
         if len(self) == int(self.length * self.load_factor):
             self._resize()
 
-        key_index, hashed_key = self.find_key_index(key)
-        if not self.hash_table[key_index]:
+        key_index, hashed_key, empty = self.find_key_index(key)
+        if empty:
             self.hash_table[key_index].extend([key, hashed_key, value])
         else:
             self.hash_table[key_index][2] = value
 
     def __getitem__(self, key: Any) -> Any:
-        key_index, *_ = self.find_key_index(key)
-        if self.hash_table[key_index]:
+        key_index, _, empty = self.find_key_index(key)
+        if not empty:
             return self.hash_table[key_index][2]
 
         raise KeyError(f"Key {key} not found")
@@ -45,26 +45,26 @@ class Dictionary:
         while self.hash_table[key_index]:
             if (key == self.hash_table[key_index][0]
                     and hashed_key == self.hash_table[key_index][1]):
-                return key_index, hashed_key
+                return key_index, hashed_key, False
             key_index = (key_index + 1) % self.length
 
-        return key_index, hashed_key
+        return key_index, hashed_key, True
 
     def clear(self) -> None:
         self.length = self.initial_length
         self.hash_table = [[] for _ in range(self.length)]
 
     def __delitem__(self, key: Any) -> None:
-        key_index, *_ = self.find_key_index(key)
-        if self.hash_table[key_index]:
+        key_index, _, empty = self.find_key_index(key)
+        if not empty:
             self.hash_table[key_index] = []
             return
 
         raise KeyError(f"Key {key} not found")
 
     def pop(self, key: Any) -> Any:
-        key_index, *_ = self.find_key_index(key)
-        if self.hash_table[key_index]:
+        key_index, _, empty = self.find_key_index(key)
+        if not empty:
             popped_value = self.hash_table[key_index][2]
             self.hash_table[key_index] = []
             return popped_value

@@ -65,4 +65,5 @@ class Dictionary:
                     self._size -= 1
                     if not bucket:
                         self._buckets[index] = None
+                    return
             raise KeyError(key)

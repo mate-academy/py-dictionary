@@ -87,7 +87,7 @@ class Dictionary:
         self.backers = [None for _ in range(self.capacity)]
         self.size = 0
 
-    def get(self, item: Hashable, default: Any = None):
+    def get(self, item: Hashable, default: Any = None) -> Any:
         hash_item = hash(item)
         index = hash_item % self.capacity
 

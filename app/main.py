@@ -25,7 +25,7 @@ class Dictionary:
             index = (index + 1) % self.capacity
 
     def resize(self) -> None:
-        if self.size / self.capacity > 0.75:
+        if (self.size + 1) / self.capacity > 0.75:
             old_backers = self.backers.copy()
             self.capacity *= 2
             self.backers = [None for _ in range(self.capacity)]
@@ -67,3 +67,54 @@ class Dictionary:
 
     def __len__(self) -> int:
         return self.size
+
+    def __delitem__(self, item: Hashable) -> None:
+        hash_item = hash(item)
+        index = hash_item % self.capacity
+
+        for _ in range(self.capacity):
+            node = self.backers[index]
+            if node is None:
+                break
+            if isinstance(node, Node) and item == node.key:
+                self.backers[index] = None
+                self.size -= 1
+                return
+            index = (index + 1) % self.capacity
+        raise KeyError(f"Key {item} not found")
+
+    def clear(self) -> None:
+        self.backers = [None for _ in range(self.capacity)]
+        self.size = 0
+
+    def get(self, item: Hashable, default: Any = None):
+        hash_item = hash(item)
+        index = hash_item % self.capacity
+
+        for _ in range(self.capacity):
+            node = self.backers[index]
+            if node is None:
+                break
+            if isinstance(node, Node) and item == node.key:
+                return node.value
+            index = (index + 1) % self.capacity
+        return default
+
+    def pop(self, item: Hashable, default: Any = None) -> Any:
+        hash_item = hash(item)
+        index = hash_item % self.capacity
+
+        for _ in range(self.capacity):
+            node = self.backers[index]
+
+            if isinstance(node, Node) and node.key == item:
+                try:
+                    return node.value
+                finally:
+                    self.backers[index] = None
+                    self.size -= 1
+            index = (index + 1) % self.capacity
+
+        if default is None:
+            raise KeyError(f"Key {item} not found")
+        return default

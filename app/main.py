@@ -4,16 +4,13 @@ from typing import Any
 
 class Dictionary:
 
-    def __init__(self, elements: Iterable = []) -> None:
+    def __init__(self, elements: None) -> None:
+        if not elements:
+            elements = []
         if not isinstance(elements, Iterable):
             raise TypeError(f"Non-iterable type: '{type(elements)}'")
         else:
             self.__load_factor = 0.66  # 2/3
-            # Default size of dict is 8
-            # Due to the rule, that the dict should expand x2
-            # when 2/3 of it is occupied
-            # It should've size on creation,
-            # where 2/3 of it > than len(elements)
             self.__table_size = 2 ** (
                 (len(elements).bit_length()
                  if len(elements).bit_length() > 2 else 2) + 1)
@@ -30,11 +27,6 @@ class Dictionary:
         self.__assign_elements(temp_buckets)
 
     def __assign_elements(self, elements: tuple) -> None:
-        """
-        This function checks, if element meets the formatting criteria
-        and updates the amount of occupied cells in table.
-        If occupied > 2/3 of size of the table - it calls resizing function
-        """
         for element in elements:
             if element and len(element) != 2:
                 raise ValueError(
@@ -49,16 +41,6 @@ class Dictionary:
             self.__table_resizing(2)
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
-        """
-        This function checks, if the key is hashable and
-        looks for an empty cell in the table.
-        It starts from index, derived from key's hash, and,
-        as a collision resolution method,
-        if it reaches the limit of the table and
-        still not did its job - starts from 0
-        The "lap" variable is used to avoid infinite loops.
-        It'll resize the table if something will go wrong.
-        """
         if not isinstance(key, Hashable):
             raise TypeError(f"Unhashable key {key}")
         hashed_value = hash(key)
@@ -66,13 +48,11 @@ class Dictionary:
         done = False
         for index in range(index, self.__table_size):
             if self.__buckets[index] is None:
-                # Empty slot -> new key
                 self.__buckets[index] = (key, value)
                 self.__occupied += 1
                 done = True
                 break
             elif self.__buckets[index][0] == key:
-                # Key already exists -> update value
                 self.__buckets[index] = (key, value)
                 done = True
                 break

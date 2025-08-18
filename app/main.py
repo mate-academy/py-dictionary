@@ -10,7 +10,7 @@ class Dictionary:
         if not isinstance(elements, Iterable):
             raise TypeError(f"Non-iterable type: '{type(elements)}'")
         else:
-            self.__load_factor = 0.66  # 2/3
+            self.__load_factor = 0.66
             self.__table_size = 2 ** (
                 (len(elements).bit_length()
                  if len(elements).bit_length() > 2 else 2) + 1)

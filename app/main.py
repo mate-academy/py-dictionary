@@ -40,6 +40,7 @@ class Dictionary:
             try:
                 if self.dict[index][0] == key and self.dict[index][2] == _hash:
                     return index
+                continue
             # У разі помилки продовжуєм
             except TypeError:
                 continue
@@ -125,8 +126,9 @@ class Dictionary:
         self.record -= 1
 
     def __iter__(self) -> tuple:
-        # Створення об'єкта для ітерації
-        return self.__str__()
+        _iter = [item[:2] for item in self.dict if isinstance(item, tuple)]
+        for item in _iter:
+            yield item
 
     def clear(self) -> None:
         # Очищаєм словник шляхом створення пустих блоків
@@ -140,20 +142,29 @@ class Dictionary:
         except KeyError:
             return default
 
-    def pop(self, key: Any) -> None:
-        # Знаходимо індекс елемента
-        _index = self.find_index(key)
+    def pop(self, key: Any, default: Any = None) -> None:
+        try:
+            # Знаходимо індекс елемента
+            _index = self.find_index(key)
+        except KeyError:
+            if default:
+                return default
+            raise KeyError
+        else:
+            # Записуєм видаляємий елемент
+            return_pop = self.dict[_index]
 
-        # Записуєм видаляємий елемент
-        return_pop = self.dict[_index]
+            # Стираєм заданий елемент
+            self.dict[_index] = None
+            self.record -= 1
 
-        # Стираєм заданий елемент
-        self.dict[_index] = None
-        self.record -= 1
-
-        return return_pop[:2]
+            return return_pop[1]
 
     def update(self, key_values: list[tuple]) -> None:
         # Перезаписуєм або додаєм вказані елементи
         for key_value in key_values:
             self.__setitem__(*key_value)
+
+a = Dictionary()
+a["sigma"] = 12
+a["baran"] = 123

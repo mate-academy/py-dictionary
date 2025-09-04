@@ -144,7 +144,7 @@ class Dictionary:
 
     def pop(self, key: Any, default: Any = None) -> None:
         try:
-            # Знаходимо індекс елемента
+            # Пошук індекса елемента
             _index = self.find_index(key)
         except KeyError:
             if default:

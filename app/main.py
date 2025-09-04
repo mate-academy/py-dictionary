@@ -157,9 +157,3 @@ class Dictionary:
         # Перезаписуєм або додаєм вказані елементи
         for key_value in key_values:
             self.__setitem__(*key_value)
-
-a = Dictionary()
-a["sigma"] = 12
-print(a)
-print(a.pop("sigma"))
-print(a)

@@ -119,9 +119,10 @@ class Dictionary:
         # Повертаєм число записаних блоків
         return self.record
 
-    def __delitem__(self, key: Any = None) -> None:
+    def __delitem__(self, key: Any) -> None:
         # Задаєм пусте значення за введеним ключем
         self.dict[self.find_index(key)] = None
+        self.record -= 1
 
     def __iter__(self) -> tuple:
         # Створення об'єкта для ітерації
@@ -130,19 +131,35 @@ class Dictionary:
     def clear(self) -> None:
         # Очищаєм словник шляхом створення пустих блоків
         self.dict = [None] * self.capacity
+        self.record = 0
 
-    def get(self, key: Any) -> Any:
+    def get(self, key: Any, default: Any = None) -> Any:
         # Отримуєм значення без помилки
         try:
             return self.__getitem__(key)
         except KeyError:
-            return None
+            return default
 
     def pop(self, key: Any) -> None:
-        # Видаляєм блок за ключем
-        self.dict[self.find_index(key)] = None
+        # Знаходимо індекс елемента
+        _index = self.find_index(key)
+
+        # Записуєм видаляємий елемент
+        return_pop = self.dict[_index]
+
+        # Стираєм заданий елемент
+        self.dict[_index] = None
+        self.record -= 1
+
+        return return_pop[:2]
 
     def update(self, key_values: list[tuple]) -> None:
         # Перезаписуєм або додаєм вказані елементи
         for key_value in key_values:
             self.__setitem__(*key_value)
+
+a = Dictionary()
+a["sigma"] = 12
+print(a)
+print(a.pop("sigma"))
+print(a)

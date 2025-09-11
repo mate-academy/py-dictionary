@@ -5,7 +5,7 @@ class Dictionary:
     def __init__(self) -> None:
         self._capacity = 8
         self._size = 0
-        self._load_factor = 2/3
+        self._load_factor = 2 / 3
 
         self._buckets = [[] for _ in range(self._capacity)]
         # Отримуємо список порожніх "відер" для хеш-таблиці

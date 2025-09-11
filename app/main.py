@@ -1,18 +1,22 @@
+from typing import Any
+
+
 class Dictionary:
-    def __init__(self):
+    def __init__(self) -> None:
         self._capacity = 8
         self._size = 0
         self._load_factor = 2/3
 
         self._buckets = [[] for _ in range(self._capacity)]
+        # Отримуємо список порожніх "відер" для хеш-таблиці
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._size
 
-    def _get_index(self, key):
+    def _get_index(self, key: int) -> int:
         return hash(key) % self._capacity
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: int, value: Any) -> None:
         idx = self._get_index(key)
         bucket = self._buckets[idx]
         key_hash = hash(key)
@@ -28,7 +32,7 @@ class Dictionary:
         if self._size / self._capacity > self._load_factor:
             self._resize()
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> Any:
         idx = self._get_index(key)
         bucket = self._buckets[idx]
         key_hash = hash(key)
@@ -39,7 +43,7 @@ class Dictionary:
 
         raise KeyError(f"Key {key!r} not found")
 
-    def _resize(self):
+    def _resize(self) -> None:
         old_buckets = self._buckets
         self._capacity *= 2
         self._buckets = [[] for _ in range(self._capacity)]

@@ -15,7 +15,7 @@ class Dictionary:
         bucket = self.buckets[idx]
 
         for i, (hh, k, v) in enumerate(bucket):
-            if k == key:
+            if k == key and hh == h:
                 bucket[i] = (hh, k, value)
                 return
         if self.size / self.capacity >= 0.66:
@@ -33,19 +33,21 @@ class Dictionary:
             if k == key:
                 return v
         else:
-            raise KeyError(key)
+            raise KeyError(f"Key {key} not found!!!")
 
     def __len__(self) -> int:
         return self.size
 
     def _resize(self) -> None:
         self.capacity = len(self.buckets)
-        self.capacity = self.capacity * 2
-        new_buckets = [[] for _ in range(self.capacity)]
-        for bucket in self.buckets:
+        new_capacity = self.capacity * 2
+        old_buckets = self.buckets
+        new_buckets = [[] for _ in range(new_capacity)]
+        for bucket in old_buckets:
             if bucket:
                 for hh, k, v in bucket:
                     node = (hh, k, v)
-                    new_idx = hh % self.capacity
+                    new_idx = hh % new_capacity
                     new_buckets[new_idx].append(node)
                 self.buckets = new_buckets
+                self.capacity = new_capacity

@@ -24,7 +24,7 @@ Your goal is to create a custom `Dictionary` class that mimics the behavior of P
 ### Key Concepts to Consider
 
 As you implement your custom dictionary, you'll need to keep the following concepts in mind:
-g
+
 - **Initial Capacity:** How much space should your dictionary allocate at the start?
 - **Load Factor:** When should your dictionary resize to maintain efficiency?
 - **Resize Strategy:** How should your dictionary expand its capacity when needed?

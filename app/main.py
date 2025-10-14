@@ -30,7 +30,7 @@ class Dictionary:
         idx = h % self.capacity
         buckets = self.buckets[idx]
         for hh, k, v in buckets:
-            if k == key:
+            if k == key and hh == h:
                 return v
         else:
             raise KeyError(f"Key {key} not found!!!")
@@ -49,5 +49,5 @@ class Dictionary:
                     node = (hh, k, v)
                     new_idx = hh % new_capacity
                     new_buckets[new_idx].append(node)
-                self.buckets = new_buckets
-                self.capacity = new_capacity
+        self.buckets = new_buckets
+        self.capacity = new_capacity

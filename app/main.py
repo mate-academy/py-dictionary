@@ -7,7 +7,7 @@ class Dictionary:
 
     def __setitem__(
             self,
-            key: str,
+            key: any,
             value: any
     ) -> None:
         h = hash(key)
@@ -18,7 +18,7 @@ class Dictionary:
         else:
             is_editing = False
             for pos, values in enumerate(self.__table[num_hash]):
-                if key == values[0]:
+                if key == values[0] and h == values[1]:
                     self.__table[num_hash][pos] = (key, h, value)
                     is_editing = True
                     break
@@ -38,12 +38,12 @@ class Dictionary:
                     new_hash = table[1] % self.__capacity
                     self.__table[new_hash].append(table)
 
-    def __getitem__(self, key: str) -> tuple:
+    def __getitem__(self, key: any) -> tuple:
 
         h = hash(key)
         index = h % self.__capacity
         for table in self.__table[index]:
-            if table[0] == key:
+            if table[0] == key and table[1] == h:
                 return table[2]
 
         raise KeyError(f"key no found: {key}")

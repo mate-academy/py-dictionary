@@ -78,7 +78,7 @@ class Dictionary:
             self,
             key: Hashable,
             hashed: int
-    ) -> tuple[int, Cell | None]:
+    ) -> tuple[int, Cell | type(_DELETED) | None]:
         """
         Internal method to find the index for a key in the hash table.
 
@@ -104,7 +104,8 @@ class Dictionary:
             cell = self.__cells[index]
 
             if cell is None:
-                return (del_cell_index or index), cell
+                index = del_cell_index or index
+                break
 
             if del_cell_index is None and cell is self._DELETED:
                 del_cell_index = index
@@ -114,9 +115,11 @@ class Dictionary:
                 and cell.hashed == hashed
                 and cell.key == key
             ):
-                return index, cell
+                break
 
             index = (index + step) & (self.__capacity - 1)
+
+        return index, cell
 
     def __rehash(self) -> None:
         """
@@ -129,7 +132,7 @@ class Dictionary:
         stored_cells: DictCells = [
             cell
             for cell in self.__cells
-            if cell is not None and cell is not self._DELETED
+            if cell not in (None, self._DELETED)
         ]
         self.__cells = [None] * self.__capacity
         self.__length = 0
@@ -161,7 +164,7 @@ class Dictionary:
         if stored_cell is self._DELETED:
             self.__deleted -= 1
 
-        if stored_cell is None:
+        if stored_cell in (self._DELETED, None):
             self.__length += 1
 
             if self.__length / self.__capacity >= self.size_threshold:
@@ -219,7 +222,7 @@ class Dictionary:
         :returns: An iterator yielding the keys.
         """
         for cell in self.__cells:
-            if cell is not None and cell is not self._DELETED:
+            if cell not in (None, self._DELETED):
                 yield cell.key
 
     def clear(self) -> None:

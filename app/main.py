@@ -104,7 +104,7 @@ class Dictionary:
             cell = self.__cells[index]
 
             if cell is None:
-                return (del_cell_index or index), None
+                return (del_cell_index or index), cell
 
             if del_cell_index is None and cell is self._DELETED:
                 del_cell_index = index
@@ -157,6 +157,9 @@ class Dictionary:
             return
 
         self.__cells[index] = Cell(key, hashed, value)
+
+        if stored_cell is self._DELETED:
+            self.__deleted -= 1
 
         if stored_cell is None:
             self.__length += 1

@@ -47,7 +47,7 @@ class Dictionary:
 
             index = (index + 1) % self.capacity
 
-        raise RuntimeError
+        raise RuntimeError("Dictionary is full")
 
     def __getitem__(self, key: object) -> object:
         index = self._index(key)
@@ -56,14 +56,14 @@ class Dictionary:
             node = self.storage[index]
 
             if node is None:
-                raise KeyError
+                raise KeyError(f"Key not found: {key}")
 
             if node.key == key:
                 return node.value
 
             index = (index + 1) % self.capacity
 
-        raise KeyError
+        raise KeyError(f"Key not found: {key}")
 
     def __len__(self) -> int:
         return self.size

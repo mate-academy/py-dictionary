@@ -9,7 +9,8 @@ class Node:
 
 
 class Dictionary:
-    def __init__(self, initial_capacity: int = 8, load_factor: float = 0.7, ) -> None:
+    def __init__(self, initial_capacity: int = 8, load_factor: float = 0.7, ) \
+            -> None:
         self.capacity = initial_capacity
         self.load_factor = load_factor
         self.buckets = [[] for _ in range(self.capacity)]
@@ -30,7 +31,7 @@ class Dictionary:
         self.buckets = new_buckets
         self.capacity = new_capacity
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: object, value: object) -> None:
         hash_value = hash(key)
         index = hash_value % self.capacity
         bucket = self.buckets[index]
@@ -45,7 +46,7 @@ class Dictionary:
         if self.size > self.capacity * self.load_factor:
             self._resize()
 
-    def __getitem__(self, key) -> None:
+    def __getitem__(self, key: object) -> None:
         hash_value = hash(key)
         index = hash_value % self.capacity
         bucket = self.buckets[index]
@@ -58,11 +59,3 @@ class Dictionary:
 
     def __len__(self) -> int:
         return self.size
-
-
-
-
-
-
-
-

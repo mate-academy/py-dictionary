@@ -18,6 +18,8 @@ class Dictionary:
         self.table = [None] * self.capacity
 
     def __setitem__(self, key: Any, value: Any) -> None:
+        if self.size / self.capacity > 0.7:
+            self._resize()
         index = hash(key) % self.capacity
         node = self.table[index]
 
@@ -50,3 +52,14 @@ class Dictionary:
 
     def __len__(self) -> int:
         return self.size
+
+    def _resize(self) -> None:
+        old_table = self.table
+        self.capacity *= 2
+        self.table = [None] * self.capacity
+        self.size = 0
+
+        for node in old_table:
+            while node:
+                self.__setitem__(node.key, node.value)
+                node = node.next

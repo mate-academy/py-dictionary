@@ -40,13 +40,13 @@ class Dictionary:
         index = self._calculate_index(hash(key))
 
         if self.table[index] is None:
-            raise KeyError
+            raise KeyError(f"Key not found: {key}")
 
         for node in self.table[index]:
             if node.key == key:
                 return node.value
 
-        raise KeyError
+        raise KeyError(f"Key not found: {key}")
 
     def __len__(self) -> int:
         return self.size

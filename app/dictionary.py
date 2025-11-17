@@ -2,6 +2,15 @@ from __future__ import annotations
 from collections.abc import Hashable, Mapping, Iterator
 
 
+class Node:
+    __slots__ = ("key", "hash", "value")
+
+    def __init__(self, key: Hashable, hash_value: int, value: object) -> None:
+        self.key = key
+        self.hash = hash_value
+        self.value = value
+
+
 class Dictionary:
     def __init__(self, size: int = 8) -> None:
         if size < 0:
@@ -10,76 +19,76 @@ class Dictionary:
         self.size = size
         self.buckets = [[] for _ in range(size)]
         self.count = 0
-
         self.load_factor = 3 / 4
 
     def __len__(self) -> int:
         return self.count
 
-    def _bucket_index(self, key: Hashable) -> int:
-        return hash(key) % self.size
+    def _bucket_index(self, key_hash: int) -> int:
+        return key_hash % self.size
 
     def _resize(self) -> None:
         old_buckets = self.buckets
+
         self.size *= 2
         self.buckets = [[] for _ in range(self.size)]
         self.count = 0
 
         for bucket in old_buckets:
-            for key, value in bucket:
-                self[key] = value
+            for node in bucket:
+                self[node.key] = node.value
 
     def __setitem__(self, key: Hashable, value: object) -> None:
         if self.count / self.size > self.load_factor:
             self._resize()
 
-        i = self._bucket_index(key)
+        key_hash = hash(key)
+        i = self._bucket_index(key_hash)
         bucket = self.buckets[i]
-
-        for j, (existing_key, _) in enumerate(bucket):
-            if key == existing_key:
-                bucket[j] = (key, value)
+        for node in bucket:
+            if node.key == key:
+                node.value = value
                 return
 
-        bucket.append((key, value))
+        bucket.append(Node(key, key_hash, value))
         self.count += 1
 
     def __getitem__(self, key: Hashable) -> object:
-        i = self._bucket_index(key)
+        key_hash = hash(key)
+        i = self._bucket_index(key_hash)
         bucket = self.buckets[i]
-
-        for existing_key, value in bucket:
-            if key == existing_key:
-                return value
+        for node in bucket:
+            if node.key == key:
+                return node.value
 
         raise KeyError(key)
 
     def __delitem__(self, key: Hashable) -> None:
-        i = self._bucket_index(key)
+        key_hash = hash(key)
+        i = self._bucket_index(key_hash)
         bucket = self.buckets[i]
-
-        for j, (existing_key, _) in enumerate(bucket):
-            if key == existing_key:
-                bucket.pop(j)
+        for index, node in enumerate(bucket):
+            if node.key == key:
+                bucket.pop(index)
                 self.count -= 1
                 return
 
         raise KeyError(key)
 
     def __contains__(self, key: Hashable) -> bool:
-        i = self._bucket_index(key)
+        key_hash = hash(key)
+        i = self._bucket_index(key_hash)
         bucket = self.buckets[i]
-
-        for existing_key, value in bucket:
-            if key == existing_key:
+        for node in bucket:
+            if node.key == key:
                 return True
 
         return False
 
     def __iter__(self) -> Iterator[Hashable]:
         for bucket in self.buckets:
-            for key, _ in bucket:
-                yield key
+            for node in bucket:
+                yield node.key
 
     def clear(self) -> None:
         self.buckets = [[] for _ in range(self.size)]
@@ -90,14 +99,14 @@ class Dictionary:
             self[key] = value
 
     def pop(self, key: Hashable, default: object = None) -> object:
-        i = self._bucket_index(key)
+        key_hash = hash(key)
+        i = self._bucket_index(key_hash)
         bucket = self.buckets[i]
-
-        for j, (existing_key, value) in enumerate(bucket):
-            if key == existing_key:
-                bucket.pop(j)
+        for index, node in enumerate(bucket):
+            if node.key == key:
+                bucket.pop(index)
                 self.count -= 1
-                return value
+                return node.value
 
         if default is not None:
             return default
@@ -110,10 +119,10 @@ class Dictionary:
 
     def values(self) -> Iterator:
         for bucket in self.buckets:
-            for _, value in bucket:
-                yield value
+            for node in bucket:
+                yield node.value
 
     def items(self) -> Iterator:
         for bucket in self.buckets:
-            for key, value in bucket:
-                yield key, value
+            for node in bucket:
+                yield node.key, node.value

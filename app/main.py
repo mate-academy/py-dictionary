@@ -74,7 +74,7 @@ class Dictionary:
             if node is not None and node is not Deleted:
                 self.__setitem__(node.key, node.value)
 
-    def __getitem__(self, key: Any) -> None:
+    def __getitem__(self, key: Any) -> Any:
         key_hash = hash(key)
         index = key_hash % self.capacity
 

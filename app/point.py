@@ -1,5 +1,5 @@
 from typing import Any
-from app.main import Dictionary
+
 
 class Point:
     def __init__(self, x: float, y: float) -> None:
@@ -26,5 +26,3 @@ class Point:
     @property
     def y(self) -> float:
         return self._y
-
-

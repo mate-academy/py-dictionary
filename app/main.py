@@ -23,6 +23,7 @@ class Dictionary:
         self.threshold = self.capacity // 2
         self.nodes = [None] * self.capacity
         self.size = 0
+        self._keys = []
 
         for slot in old_nodes:
             if slot is None:
@@ -86,10 +87,9 @@ class Dictionary:
         return self.size
 
     def clear(self) -> None:
-        self.capacity = 10
-        self.threshold = self.capacity // 2
         self.nodes = [None] * self.capacity
         self.size = 0
+        self._keys: list[Any] = []
 
     def __delitem__(self, key: Any) -> None:
         _index: int = hash(key) % self.capacity
@@ -102,6 +102,7 @@ class Dictionary:
             if slot.key == key:
                 self.nodes[_index] = None
                 self.size -= 1
+                self._keys.remove(key)
                 return
             raise KeyError(key)
 
@@ -109,6 +110,7 @@ class Dictionary:
             if node.key == key:
                 slot.pop(i)
                 self.size -= 1
+                self._keys.remove(key)
                 if len(slot) == 1:
                     self.nodes[_index] = slot[0]
                 elif len(slot) == 0:

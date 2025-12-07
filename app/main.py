@@ -13,9 +13,9 @@ class Dictionary:
         chain = self.sheet[index_new_element]
         for i, (k, h, v) in enumerate(chain):
             if k == key:
-                chain[i] = (key, index_new_element, value)
+                chain[i] = (key, hash(key), value)
                 return
-        chain.append((key, index_new_element, value))
+        chain.append((key, hash(key), value))
         self.count_elements += 1
         if self.count_elements / self.capacity > self.threshold:
             self._resize()
@@ -27,7 +27,7 @@ class Dictionary:
         for element in old_table:
             for k, h, v in element:
                 new_index = hash(k) % self.capacity
-                self.sheet[new_index].append((k, h, v))
+                self.sheet[new_index].append((k, hash(k), v))
 
     def __len__(self) -> int:
         return self.count_elements

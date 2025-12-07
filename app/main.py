@@ -1,6 +1,4 @@
-from typing import Any, List, Tuple
-
-Chain = List[Tuple[Any, Any]]
+from typing import Any
 
 
 class Dictionary:
@@ -26,7 +24,6 @@ class Dictionary:
         self.capacity *= 2
         old_table = self.sheet
         self.sheet = [[] for _ in range(self.capacity)]
-
         for element in old_table:
             for k, v in element:
                 new_index = hash(k) % self.capacity

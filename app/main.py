@@ -1,2 +1,3 @@
-class Dictionary:
-    pass
+from app.my_dict import Dictionary
+
+Dictionary()

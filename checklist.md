@@ -14,7 +14,7 @@ The exceptions:
 - `__init__` and `clear` methods always have O(n) time complexity
 - resizing the dictionary works with
 **O(n)** time complexity in the best variant and 
-**O(n^2)** i the worst (because of collision handling).
+**O(n^2)** in the worst (because of collision handling).
 
 
 Good example:

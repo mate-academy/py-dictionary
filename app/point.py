@@ -26,3 +26,6 @@ class Point:
     @property
     def y(self) -> float:
         return self._y
+
+    def __str__(self) -> str:
+        return f"Point({self.x}, {self.y})"

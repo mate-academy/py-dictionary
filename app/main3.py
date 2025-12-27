@@ -19,8 +19,13 @@ class Dictionary:
         lst = [key, hash_key, value]
         index = hash_key % self.__bucket
 
+        if not self.__table[index]:
+            self.__table[index].append(lst)
+            self.length += 1
+            return
+
         for i, existing in enumerate(self.__table[index]):
-            if existing[0] == key and existing[1] == hash_key:
+            if existing[0] == key:
                 self.__table[index][i] = lst
                 return
 
@@ -33,7 +38,7 @@ class Dictionary:
             old_table = self.__table
             self.__bucket *= 2
             self.__table = [[] for _ in range(self.__bucket)]
-            self.length = 0  # Буде правильно підраховано при повторній вставці
+            self.length = 0
 
             for slot in old_table:
                 for lst in slot:
@@ -44,8 +49,13 @@ class Dictionary:
         hash_key, index = self.hashfunction(key)
         lst = [key, hash_key, value]
 
+        if not self.__table[index]:
+            self.__table[index].append(lst)
+            self.length += 1
+            return
+
         for i, existing in enumerate(self.__table[index]):
-            if existing[0] == key and existing[1] == hash_key:
+            if existing[0] == key:
                 self.__table[index][i] = lst
                 return
 
@@ -55,6 +65,7 @@ class Dictionary:
     def __getitem__(self, key: Any) -> Any:
         hash_key, index = self.hashfunction(key)
         for lst in self.__table[index]:
-            if lst[0] == key and lst[1] == hash_key:
+            if lst[0] == key:
                 return lst[2]
+
         raise KeyError(f"Key '{key}' not found")

@@ -49,3 +49,4 @@ class Dictionary:
         for bucket in old_table:
             for k, v, h in bucket:
                 self[k] = v
+g

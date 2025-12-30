@@ -1,8 +1,6 @@
 from typing import Any
 
-
 class Dictionary:
-
     LOAD_FACTOR = 0.75
 
     def __init__(self, capacity: int = 8) -> None:
@@ -15,8 +13,8 @@ class Dictionary:
         index = key_hash % self.capacity
         bucket = self.table[index]
 
-        for i, (k, v, h) in enumerate(bucket):
-            if h == key_hash and k == key:
+        for i, (a, b, c) in enumerate(bucket):
+            if c == key_hash and a == key:
                 bucket[i] = (key, value, key_hash)
                 return
 
@@ -31,9 +29,9 @@ class Dictionary:
         index = key_hash % self.capacity
         bucket = self.table[index]
 
-        for k, v, h in bucket:
-            if h == key_hash and k == key:
-                return v
+        for a, b, c in bucket:
+            if c == key_hash and a == key:
+                return b
 
         raise KeyError(key)
 
@@ -46,6 +44,6 @@ class Dictionary:
         self.table = [[] for _ in range(self.capacity)]
         self.size = 0
 
-        for bucket in old_table:
-            for k, v, h in bucket:
-                self[k] = v
+        for bkt in old_table:
+            for a, b, c in bkt:
+                self[a] = b

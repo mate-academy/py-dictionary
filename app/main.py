@@ -11,29 +11,30 @@ class Dictionary:
         self.size = 0
 
     def __setitem__(self, key: Any, value: Any) -> None:
-        key_hash = hash(key)
-        index = key_hash % self.capacity
+        incoming_hash = hash(key)
+        index = incoming_hash % self.capacity
         bucket = self.table[index]
 
-        for i, (k, v, h) in enumerate(bucket):
-            if h == key_hash and k == key:
-                bucket[i] = (key, value, key_hash)
+        for (position,
+             (stored_key, stored_value, stored_hash)) in enumerate(bucket):
+            if stored_hash == incoming_hash and stored_key == key:
+                bucket[position] = (key, value, stored_hash)
                 return
 
-        bucket.append((key, value, key_hash))
+        bucket.append((key, value, incoming_hash))
         self.size += 1
 
         if self.size / self.capacity > self.LOAD_FACTOR:
             self._resize()
 
     def __getitem__(self, key: Any) -> Any:
-        key_hash = hash(key)
-        index = key_hash % self.capacity
+        incoming_hash = hash(key)
+        index = incoming_hash % self.capacity
         bucket = self.table[index]
 
-        for k, v, h in bucket:
-            if h == key_hash and k == key:
-                return v
+        for stored_key, stored_value, stored_hash in bucket:
+            if stored_hash == incoming_hash and stored_key == key:
+                return stored_value
 
         raise KeyError(key)
 
@@ -47,5 +48,5 @@ class Dictionary:
         self.size = 0
 
         for bucket in old_table:
-            for k, v, h in bucket:
-                self[k] = v
+            for stored_key, stored_value, _ in bucket:
+                self[stored_key] = stored_value

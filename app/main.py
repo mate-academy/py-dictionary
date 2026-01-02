@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Hashable
 
 
 class Dictionary:
@@ -10,7 +10,7 @@ class Dictionary:
         self.table = [[] for _ in range(capacity)]
         self.size = 0
 
-    def __setitem__(self, key: Any, value: Any) -> None:
+    def __setitem__(self, key: Hashable, value: Any) -> None:
         incoming_hash = hash(key)
         index = incoming_hash % self.capacity
         bucket = self.table[index]
@@ -27,7 +27,7 @@ class Dictionary:
         if self.size / self.capacity > self.LOAD_FACTOR:
             self._resize()
 
-    def __getitem__(self, key: Any) -> Any:
+    def __getitem__(self, key: Hashable) -> Any:
         incoming_hash = hash(key)
         index = incoming_hash % self.capacity
         bucket = self.table[index]

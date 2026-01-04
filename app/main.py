@@ -19,7 +19,7 @@ class Dictionary:
 
         for node in old_data:
             if node is not None:
-                self.__setitem__(node[0], node[1])
+                self.__setitem__(node[0], node[2])
 
     def __setitem__(self, key: any, value: any) -> None:
         if (self.count + 1) / self.size > self.load_factor:
@@ -31,24 +31,24 @@ class Dictionary:
         current_node = self.data[hash_index]
 
         if current_node is None:
-            self.data[hash_index] = [key, value, None]
+            self.data[hash_index] = [key, hash_index, value, None]
             self.count += 1
             return
 
         while current_node is not None:
             if current_node[0] == key:
-                current_node[1] = value
+                current_node[2] = value
                 return
 
-            if current_node[2] is None:
+            if current_node[3] is None:
                 break
 
-            current_index = current_node[2]
+            current_index = current_node[3]
             current_node = self.data[current_index]
 
         next_index = self._get_next_index()
-        self.data[next_index] = [key, value, None]
-        self.data[current_index][2] = next_index
+        self.data[next_index] = [key, hash_index, value, None]
+        self.data[current_index][3] = next_index
         self.count += 1
 
     def __getitem__(self, key: any) -> any:
@@ -60,14 +60,14 @@ class Dictionary:
             raise KeyError(key)
 
         while current_node[0] != key:
-            if current_node[2] is None:
+            if current_node[3] is None:
                 raise KeyError(key)
-            current_node = self.data[current_node[2]]
+            current_node = self.data[current_node[3]]
 
         if current_node[0] != key:
             raise KeyError(key)
 
-        return current_node[1]
+        return current_node[2]
 
     def __len__(self) -> int:
         return self.count
@@ -80,4 +80,4 @@ class Dictionary:
     def __iter__(self) -> Iterator[tuple[str, any]]:
         for node in self.data:
             if node is not None:
-                yield node[0], node[1]
+                yield node[0], node[2]

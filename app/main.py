@@ -8,9 +8,6 @@ class Dictionary:
         self.count = 0
         self.load_factor = 2 / 3
 
-    def _hash(self, key: any) -> int:
-        return hash(key) % self.size
-
     def _resize(self) -> None:
         self.size *= 2
         old_data = self.data
@@ -25,13 +22,14 @@ class Dictionary:
         if (self.count + 1) / self.size > self.load_factor:
             self._resize()
 
-        hash_index = self._hash(key)
+        full_hash = hash(key)
+        hash_index = full_hash % self.size
 
         current_index = hash_index
         current_node = self.data[hash_index]
 
         if current_node is None:
-            self.data[hash_index] = [key, hash_index, value, None]
+            self.data[hash_index] = [key, full_hash, value, None]
             self.count += 1
             return
 
@@ -47,12 +45,13 @@ class Dictionary:
             current_node = self.data[current_index]
 
         next_index = self._get_next_index()
-        self.data[next_index] = [key, hash_index, value, None]
+        self.data[next_index] = [key, full_hash, value, None]
         self.data[current_index][3] = next_index
         self.count += 1
 
     def __getitem__(self, key: any) -> any:
-        hash_index = self._hash(key)
+        full_hash = hash(key)
+        hash_index = full_hash % self.size
 
         current_node = self.data[hash_index]
 
@@ -63,9 +62,6 @@ class Dictionary:
             if current_node[3] is None:
                 raise KeyError(key)
             current_node = self.data[current_node[3]]
-
-        if current_node[0] != key:
-            raise KeyError(key)
 
         return current_node[2]
 

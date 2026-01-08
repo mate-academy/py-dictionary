@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class Dictionary:
 
     def __init__(self) -> None:
@@ -6,8 +9,7 @@ class Dictionary:
         self.size = 0
         self.nodes = [None] * self.capacity
 
-
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: int) -> None:
         if self.size / self.capacity > self.load_factor:
             self.resize()
         hash_k, index = self.get_hash_and_index(key)
@@ -21,16 +23,16 @@ class Dictionary:
         self.nodes[index] = [key, hash_k, value]
         self.size += 1
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> None:
         _, index = self.get_hash_and_index(key)
 
         while self.nodes[index] is not None:
             if self.nodes[index][0] == key:
-                    return self.nodes[index][2]
+                return self.nodes[index][2]
             index = (index + 1) % self.capacity
         raise KeyError
 
-    def resize(self):
+    def resize(self) -> None:
         old_nodes = self.nodes
         self.capacity *= 2
         self.nodes = [None] * self.capacity
@@ -42,10 +44,10 @@ class Dictionary:
                 value = item[2]
                 self[key] = value
 
-    def get_hash_and_index(self, key):
+    def get_hash_and_index(self, key: str) -> Any:
         hash_k = hash(key)
         index = hash_k % self.capacity
         return hash_k, index
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.size

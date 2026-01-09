@@ -27,16 +27,25 @@ class Dictionary:
         if load_factor <= 0.75:
             return
         new_capacity = self.capacity * 2
-        new_table = [None] * new_capacity
+        new_table: list = [None] * new_capacity
+
         for bucket in self.table:
             if bucket is not None:
                 for node in bucket:
                     new_index = node.hash_key % new_capacity
-                    temporary_variable = new_table[new_index]
-                    if temporary_variable is None:
-                        temporary_variable = []
-                    new_table[new_index] = temporary_variable
-                    temporary_variable.append(node)
+
+                    if new_table[new_index] is None:
+                        new_table[new_index] = []
+
+                    new_bucket = new_table[new_index]
+                    assert new_bucket is not None
+
+                    for existing_node in new_bucket:
+                        if existing_node.key == node.key:
+                            existing_node.value = node.value
+                            break
+                    else:
+                        new_bucket.append(node)
 
         self.table = new_table
         self.capacity = new_capacity
@@ -55,7 +64,8 @@ class Dictionary:
         return self.size
 
     def clear(self) -> None:
-        self.table = [None] * 8
+        self.capacity = 8
+        self.table = [None] * self.capacity
         self.size = 0
 
     def __delitem__(self, key: Any) -> None:

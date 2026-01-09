@@ -2,7 +2,7 @@ from typing import Any
 
 
 class Node:
-    def __init__(self, key: int, value: Any) -> None:
+    def __init__(self, key: Any, value: Any) -> None:
         try:
             self.hash_key = hash(key)
         except TypeError:

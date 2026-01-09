@@ -15,10 +15,12 @@ class Dictionary:
         if bucket is None:
             bucket = []
             self.table[index] = bucket
+
         for node in bucket:
             if node.key == key:
                 node.value = value
                 return
+
         new_node = Node(key, value)
         bucket.append(new_node)
         self.size += 1
@@ -27,7 +29,7 @@ class Dictionary:
         if load_factor <= 0.75:
             return
         new_capacity = self.capacity * 2
-        new_table: list = [None] * new_capacity
+        new_table: list[list[Node] | None] = [None] * new_capacity
 
         for bucket in self.table:
             if bucket is not None:
@@ -36,16 +38,7 @@ class Dictionary:
 
                     if new_table[new_index] is None:
                         new_table[new_index] = []
-
-                    new_bucket = new_table[new_index]
-                    assert new_bucket is not None
-
-                    for existing_node in new_bucket:
-                        if existing_node.key == node.key:
-                            existing_node.value = node.value
-                            break
-                    else:
-                        new_bucket.append(node)
+                    new_table[new_index].append(node)
 
         self.table = new_table
         self.capacity = new_capacity

@@ -97,7 +97,7 @@ from app.point import Point
         ),
     ],
 )
-def test_dictionary_add(items: list, pairs_after_adding: list):
+def test_dictionary_add(items: list, pairs_after_adding: list[set]) -> None:
 
     dictionary = Dictionary()
     for key, value in items:
@@ -178,13 +178,13 @@ def test_resize_bucket():
 
 
 def test_missing_key():
-    dictionary = Dictionary()
+    dictionary = Dictionary(capacity=1)
     with pytest.raises(KeyError):
         dictionary["missing_key"]
 
 
 def test_is_custom_dict():
-    dictionary = Dictionary()
+    dictionary = Dictionary(capacity=1)
     is_dict = False
     for attr in dictionary.__dict__:
         if type(dictionary.__getattribute__(attr)) == dict:

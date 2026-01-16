@@ -6,6 +6,9 @@ class Point:
         self._x = x
         self._y = y
 
+    def __repr__(self) -> str:
+        return f"Point({self._x}, {self._y})"
+
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Point):
             return False
@@ -17,7 +20,7 @@ class Point:
         # which is NOT a best practice, but you will be able to predict
         # a hash value by coordinates of the point and its index
         # in the hashtable as well
-        return hash((self.x, self.y))
+        return (self._x * self._y) * (self._y + self._x)
 
     @property
     def x(self) -> float:

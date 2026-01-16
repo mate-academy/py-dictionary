@@ -11,7 +11,7 @@ class Point:
             return False
         return self.x == other.x and self.y == other.y
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> float:
         # Change the implementation of the hash to debug your code.
         # For example, you can return self.x + self.y as a hash
         # which is NOT a best practice, but you will be able to predict

@@ -12,12 +12,7 @@ class Point:
         return self.x == other.x and self.y == other.y
 
     def __hash__(self) -> int:
-        # Change the implementation of the hash to debug your code.
-        # For example, you can return self.x + self.y as a hash
-        # which is NOT a best practice, but you will be able to predict
-        # a hash value by coordinates of the point and its index
-        # in the hashtable as well
-        return hash((self.x, self.y))
+        return hash(str(self.x) + str(self.y))
 
     @property
     def x(self) -> float:
@@ -26,3 +21,6 @@ class Point:
     @property
     def y(self) -> float:
         return self._y
+
+    def __repr__(self) -> str:
+        return f"Point with {self.x} x coordinate and {self.y} y coordinate"

@@ -18,6 +18,7 @@ class Point:
         # a hash value by coordinates of the point and its index
         # in the hashtable as well
         return hash((self.x, self.y))
+        # return self.x + self.y
 
     @property
     def x(self) -> float:
@@ -26,3 +27,6 @@ class Point:
     @property
     def y(self) -> float:
         return self._y
+
+    def __repr__(self):
+        return f"Point({self.x}, {self.y})"

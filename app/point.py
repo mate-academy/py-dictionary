@@ -5,6 +5,7 @@ class Point:
     def __init__(self, x: float, y: float) -> None:
         self._x = x
         self._y = y
+        self.next = None
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Point):
@@ -17,7 +18,7 @@ class Point:
         # which is NOT a best practice, but you will be able to predict
         # a hash value by coordinates of the point and its index
         # in the hashtable as well
-        return hash((self.x, self.y))
+        return hash((self.x + self.y))
 
     @property
     def x(self) -> float:
@@ -26,3 +27,11 @@ class Point:
     @property
     def y(self) -> float:
         return self._y
+
+    @x.setter
+    def x(self, value: float) -> None:
+        self._x = value
+
+    @y.setter
+    def y(self, value: float) -> None:
+        self._y = value

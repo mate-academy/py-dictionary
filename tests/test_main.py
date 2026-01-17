@@ -98,7 +98,6 @@ from app.point import Point
     ],
 )
 def test_dictionary_add(items: list, pairs_after_adding: list):
-
     dictionary = Dictionary()
     for key, value in items:
         dictionary[key] = value
@@ -152,7 +151,7 @@ def test_dictionary_add(items: list, pairs_after_adding: list):
 )
 @mock.patch("app.main.hash")
 def test_dictionary_add_with_mocked_hash(
-    mock_hash: mock, items: list, pairs_after_adding: list
+        mock_hash: mock, items: list, pairs_after_adding: list
 ):
     mock_hash.return_value = 3
 

@@ -19,9 +19,12 @@ class Dictionary:
             if self.count_items >= self.max_items:
                 self.old_list = self.reset_dict()
                 self.old_list.append((self.hash_key, key, value))
+
                 for item in self.old_list:
                     if item != "":
-                        self.add_new_item(*item)
+                        self.index_key = item[0] % self.max_length
+                        self.check_item(item[0], item[1])
+                        self.add_new_item(item[0], item[1], item[2])
             else:
                 self.add_new_item(self.hash_key, key, value)
 
@@ -31,7 +34,7 @@ class Dictionary:
             if self.check_item(hash(key), key):
                 return self.my_dict[self.index_key][2]
             else:
-                raise KeyError
+                raise KeyError(key)
         except IndexError:
             raise KeyError(key)
 
@@ -44,8 +47,6 @@ class Dictionary:
             key: Any,
             value: Any
     ) -> None:
-        self.index_key = hash_key % self.max_length
-        self.check_item(hash_key, key)
         self.count_items += 1
         self.my_dict[self.index_key] = (hash_key, key, value)
 

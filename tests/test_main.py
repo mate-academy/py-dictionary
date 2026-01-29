@@ -19,7 +19,6 @@ from app.point import Point
 #         del dictionary[key]
 #     print(len(dictionary))
 
-
 @pytest.mark.parametrize(
     "items,pairs_after_adding",
     [

@@ -20,7 +20,7 @@ class Dictionary:
             self.size += 1
             if self.size == round(self.capacity * self.load_factor) + 1:
                 self.resize()
-                self.__setitem__(key, value)
+                return self.__setitem__(key, value)
             # add new item
             hash_index = self.check_next(hash_index)
             self.hash_table[hash_index] = []
@@ -32,7 +32,7 @@ class Dictionary:
         hash_index = hash(key) % self.capacity
         while True:
             if self.hash_table[hash_index] is None:
-                raise KeyError
+                raise KeyError(f"Key not found: {key}")
             if (self.hash_table[hash_index][0] == key
                     and self.hash_table[hash_index][1] == hash(key)):
                 return self.hash_table[hash_index][2]

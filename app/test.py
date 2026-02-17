@@ -11,7 +11,7 @@ def test_my_dictionary() -> None:
 
     print("--- Починаємо тестування ---")
 
-    # 3. Додаємо дані (__setitem__)
+    # 1. (__setitem__)
     print(f"Додаємо p1 (hash={hash(p1)})...")
     my_map[p1] = "Це перша точка"
 
@@ -21,14 +21,14 @@ def test_my_dictionary() -> None:
     print(f"Додаємо p3 (hash={hash(p3)})...")
     my_map[p3] = "Це третя точка"
 
-    # 4. Перевіряємо довжину (__len__)
+    # 2. (__len__)
     print(f"\nКількість елементів: {len(my_map)}")
     if len(my_map) != 3:
         print("ПОМИЛКА: Розмір має бути 3!")
     else:
         print("Розмір правильний.")
 
-    # 5. Перевіряємо пошук (__getitem__)
+    # 3. Перевіряємо пошук (__getitem__)
     print("\nПеревірка пошуку:")
     print(f"Значення для p1: {my_map[p1]}")
     print(f"Значення для p2: {my_map[p2]}")

@@ -23,12 +23,9 @@ def test_my_dictionary() -> None:
 
     # 2. (__len__)
     print(f"\nКількість елементів: {len(my_map)}")
-    if len(my_map) != 3:
-        print("ПОМИЛКА: Розмір має бути 3!")
-    else:
-        print("Розмір правильний.")
+    assert len(my_map) == 3, "Розмір має бути 3!"
 
-    # 3. Перевіряємо пошук (__getitem__)
+    # 3. (__getitem__)
     print("\nПеревірка пошуку:")
     print(f"Значення для p1: {my_map[p1]}")
     print(f"Значення для p2: {my_map[p2]}")
@@ -36,10 +33,8 @@ def test_my_dictionary() -> None:
     p_check = Point(1, 2)
     print(f"Шукаємо нову точку (1, 2): {my_map[p_check]}")
 
-    if my_map[p_check] == "Це перша точка":
-        print("Тест пройдено успішно!")
-    else:
-        print("Помилка: знайдено не те значення.")
+    assert my_map[p_check] == "Це перша точка", \
+        "Помилка: знайдено не те значення."
 
 
 # Запускаємо тест

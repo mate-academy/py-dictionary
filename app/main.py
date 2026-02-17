@@ -54,9 +54,14 @@ class Dictionary:
 
         for item in old_hash_table:
             if item is not None:
-                key, hash_key, value = item
+                key, saved_hash, value = item
 
-                self.__setitem__(key, value)
+                index = saved_hash % self.capacity
+
+                while self.hash_table[index] is not None:
+                    index = (index + 1) % self.capacity
+                self.hash_table[index] = (key, saved_hash, value)
+                self.length += 1
 
     def __len__(self) -> int:
         return self.length

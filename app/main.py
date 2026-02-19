@@ -6,7 +6,7 @@ class Dictionary:
     load_factor_threshold = 0.7
 
     def __init__(self) -> None:
-        self.list_of_nodes: List[Node | None] = \
+        self.list_of_nodes: List["Node | None"] = \
             [None for _ in range(Dictionary.initial_capacity)]
         self.length = 0
 

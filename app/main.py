@@ -8,6 +8,7 @@ class Dictionary:
     def __init__(self) -> None:
         self.list_of_nodes: List[Node | None] = \
             [None for _ in range(Dictionary.initial_capacity)]
+        self.length = 0
 
     def __setitem__(
             self,
@@ -15,8 +16,10 @@ class Dictionary:
             value: Any
     ) -> None:
 
-        if isinstance(self.find_key_in_dict(key), int):
-            self.list_of_nodes[self.find_key_in_dict(key)].value = value
+        existing_key = self.find_key_in_dict(key)
+
+        if isinstance(existing_key, int):
+            self.list_of_nodes[existing_key].value = value
             return
 
         if (self.__len__() + 1
@@ -27,13 +30,15 @@ class Dictionary:
 
         if not self.list_of_nodes[index]:
             self.list_of_nodes[index] = Node(key, value)
-            return
+
         else:
             while isinstance(self.list_of_nodes[index].next, int):
                 index = self.list_of_nodes[index].next
             self.list_of_nodes[index].next = self.find_empty_cell(index)
             self.list_of_nodes[self.list_of_nodes[index].next] \
                 = Node(key, value)
+
+        self.length += 1
 
     def __getitem__(
             self,
@@ -46,12 +51,7 @@ class Dictionary:
             raise KeyError(f"The key '{key}' is not present in the dictionary")
 
     def __len__(self) -> int:
-
-        count_len = 0
-        for i in self.list_of_nodes:
-            if i:
-                count_len += 1
-        return count_len
+        return self.length
 
     def calculate_index(
             self,
@@ -72,6 +72,7 @@ class Dictionary:
                      self.list_of_nodes[i].value]
                 )
                 self.list_of_nodes[i] = None
+        self.length = 0
         for item in temporary_list:
             self.__setitem__(item[0], item[1])
 

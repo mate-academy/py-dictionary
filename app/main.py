@@ -45,8 +45,9 @@ class Dictionary:
             key: Any
     ) -> Any:
 
-        if isinstance(self.find_key_in_dict(key), int):
-            return self.list_of_nodes[self.find_key_in_dict(key)].value
+        existing_key = self.find_key_in_dict(key)
+        if isinstance(existing_key, int):
+            return self.list_of_nodes[existing_key].value
         else:
             raise KeyError(f"The key '{key}' is not present in the dictionary")
 
@@ -101,7 +102,7 @@ class Dictionary:
     def find_empty_cell(
             self,
             index: int
-    ) -> int | None:
+    ) -> int:
 
         for i in range(index, len(self.list_of_nodes)):
             if not self.list_of_nodes[i]:

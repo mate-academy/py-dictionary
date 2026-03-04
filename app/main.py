@@ -61,7 +61,8 @@ class Dictionary:
                 return node.value
             node = node.next
 
-        raise KeyError(key)
+        # Descriptive message for KeyError as required
+        raise KeyError(f"Key not found: {key}")
 
     def _resize(self) -> None:
         old_buckets: list[Optional[Node]] = self._buckets

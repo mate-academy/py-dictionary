@@ -14,6 +14,7 @@ class Dictionary:
     def __setitem__(self, key: Any, value: Any) -> None:
         bucket_index = hash(key) % len(self.hash_table)
         first_deleted = None
+        start_index = bucket_index  # ← запам'ятали старт
 
         while self.hash_table[bucket_index] is not None:
             slot = self.hash_table[bucket_index]
@@ -24,6 +25,8 @@ class Dictionary:
                 self.hash_table[bucket_index] = (key, hash(key), value)
                 return
             bucket_index = (bucket_index + 1) % len(self.hash_table)
+            if bucket_index == start_index:  # ← пройшли повне коло
+                break
 
         target = first_deleted if first_deleted is not None else bucket_index
         self.hash_table[target] = (key, hash(key), value)

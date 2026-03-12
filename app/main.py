@@ -13,8 +13,7 @@ class Dictionary:
         if self.hash_table[index_table] is None:
             self.hash_table[hash_key % self.capacity] = [key, value, hash_key]
             self.count_current_elements += 1
-
-        if self.hash_table[index_table] is not None:
+        else:
             if self.hash_table[index_table][0] == key:
                 self.hash_table[index_table] = [key, value, hash_key]
 
@@ -53,9 +52,11 @@ class Dictionary:
     def __getitem__(self, key: Any) -> Any | None:
         hash_key = hash(key)
         index_table = hash_key % self.capacity
+        count_iteration = 0
         while True:
+            count_iteration += 1
             if self.hash_table[index_table] is None:
-                raise KeyError
+                raise KeyError(f"Key not found: {key}")
 
             if self.hash_table[index_table][0] == key:
                 if self.hash_table[index_table][2] == hash_key:
@@ -65,6 +66,9 @@ class Dictionary:
 
             if index_table == self.capacity:
                 index_table = 0
+
+            if count_iteration >= self.capacity:
+                raise KeyError(f"Key not found: {key}")
 
     def __len__(self) -> int:
         return self.count_current_elements

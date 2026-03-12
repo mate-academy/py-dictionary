@@ -17,7 +17,7 @@ class Dictionary:
             if self.hash_table[index_table][0] == key:
                 self.hash_table[index_table] = [key, value, hash_key]
 
-            if self.hash_table[index_table][0] != key:
+            else:
                 while True:
                     if index_table < self.capacity:
                         index_table += 1

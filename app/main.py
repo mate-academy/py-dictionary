@@ -63,4 +63,4 @@ class Dictionary:
                     return
                 idx = (idx + 1) % self.dict_size
                 if idx == start:
-                    raise KeyError(key)
+                    return

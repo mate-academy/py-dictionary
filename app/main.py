@@ -14,7 +14,7 @@ class Dictionary:
         if self.dictionary[index] is None:
             self.dictionary[index] = []
         for i, (k, stored_hash, v) in enumerate(self.dictionary[index]):
-            if k == key:
+            if k == key and stored_hash == h:
                 self.dictionary[index][i] = (key, h, value)
                 return
         self.dictionary[index].append((key, h, value))
@@ -24,7 +24,7 @@ class Dictionary:
         h = hash(key)
         index = h % self.capacity
         if self.dictionary[index] is None:
-            raise KeyError(f"The {self.dictionary} is None")
+            raise KeyError(f"Key {key} is not in the dictionary")
         for i, (k, stored_hash, v) in enumerate(self.dictionary[index]):
             if k == key and stored_hash == h:
                 return v

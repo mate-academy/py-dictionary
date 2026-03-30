@@ -1,10 +1,10 @@
 class Dictionary:
-    def __init__(self):
+    def __init__(self) -> None:
         self.capacity = 8
         self.dictionary = [None] * self.capacity
         self.size = 0
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -> None:
         load_factor = self.size / self.capacity
         if load_factor > (2 / 3):
             self._resize()
@@ -20,7 +20,7 @@ class Dictionary:
         self.dictionary[index].append((key, h, value))
         self.size += 1
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> None:
         h = hash(key)
         index = h % self.capacity
         if self.dictionary[index] is None:
@@ -30,7 +30,7 @@ class Dictionary:
                 return v
         raise KeyError(f"Key {key} is not in the dictionary")
 
-    def _resize(self):
+    def _resize(self) -> None:
         old = self.dictionary
         self.capacity *= 2
         self.dictionary = [None] * self.capacity
@@ -40,5 +40,5 @@ class Dictionary:
                 for key, h, value in slot:
                     self[key] = value
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.size

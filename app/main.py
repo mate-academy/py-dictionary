@@ -1,4 +1,4 @@
-from app.point import Point
+
 from typing import Any, List
 
 
@@ -95,15 +95,3 @@ class Dictionary:
                 return
             idx = (idx + 1) % self.capacity
         raise KeyError(f"Key {key} not found for deletion")
-
-
-my_dict = Dictionary()
-
-p1 = Point(1, 2)
-p2 = Point(3, 4)
-
-my_dict[p1] = "A"
-my_dict[p2] = "B"
-
-print(my_dict[p1])
-print(len(my_dict))

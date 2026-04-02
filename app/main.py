@@ -89,17 +89,20 @@ class Dictionary:
 
     def get(self, key: Any, default: Any = None) -> Any:
         try:
-            return self[key]
+            return self.__getitem__(key)
         except KeyError:
             return default
 
     def pop(self, key: Any, default: Any = None) -> Any:
-        try:
-            value = self[key]
-            del self[key]
-            return value
-        except KeyError:
+        bucket, index = self._find_node(key)
+
+        if bucket is None or index is None:
             return default
+
+        value = bucket[index].value
+        del bucket[index]
+        self._size -= 1
+        return value
 
     def update(self, other: Any) -> None:
         if hasattr(other, "items"):

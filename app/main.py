@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from collections.abc import Hashable
 from copy import deepcopy
-from typing import Any
+from typing import Any, Generator
 
 
 @dataclass
@@ -126,5 +126,5 @@ class Dictionary:
             else:
                 raise KeyError("The key does not exist")
 
-    def __iter__(self) -> None:
+    def __iter__(self) -> Generator:
         return (element for element in self.__slots if element)

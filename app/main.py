@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from collections.abc import Hashable
-from copy import deepcopy
 from typing import Any, Generator
 
 
@@ -24,12 +23,11 @@ class Dictionary:
             self[key] = value
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
-        key_exist = any(key == elem.key for elem in self.__slots if elem)
         if (self.__count_not_empty_elem + 1
-                > int(self.__capacity * self.LOAD_FACTOR) and not key_exist):
+                > int(self.__capacity * self.LOAD_FACTOR)):
             self.resize_table()
-            self.__slots = deepcopy(self.__new_slots)
-            self.__new_slots.clear()
+            self.__slots = self.__new_slots
+            self.__new_slots = []
 
         self.set_place(key, value, self.__slots)
 
@@ -127,4 +125,4 @@ class Dictionary:
                 raise KeyError("The key does not exist")
 
     def __iter__(self) -> Generator:
-        return (element for element in self.__slots if element)
+        return (element.key for element in self.__slots if element)

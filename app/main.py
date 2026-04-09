@@ -16,7 +16,7 @@ class Dictionary:
 
     def __init__(self, **kwargs: Any) -> None:
         self.__capacity = 8
-        self.__slots: list[None | Element] = [None] * self.__capacity
+        self.__slots: list[None | Element | bool] = [None] * self.__capacity
         self.__new_slots = []
         self.__count_not_empty_elem = 0
 
@@ -86,7 +86,7 @@ class Dictionary:
         self.__slots = [None] * self.__capacity
         self.__count_not_empty_elem = 0
 
-    def get(self, key: Hashable, default_value: Any = 0) -> Any:
+    def get(self, key: Hashable, default_value: Any = None) -> Any:
         try:
             return self[key]
         except KeyError:
@@ -98,11 +98,11 @@ class Dictionary:
 
     def __delitem__(self, key: Hashable) -> None:
         place_dependent_on_hash = hash(key) % self.__capacity
-        self.__count_not_empty_elem -= 1
         while True:
             if self.__slots[place_dependent_on_hash]:
                 if self.__slots[place_dependent_on_hash].key == key:
-                    self.__slots[place_dependent_on_hash].key = False
+                    self.__slots[place_dependent_on_hash] = False
+                    self.__count_not_empty_elem -= 1
                     break
 
                 place_dependent_on_hash += 1
@@ -112,12 +112,13 @@ class Dictionary:
 
     def pop(self, key: Hashable) -> Any:
         place_dependent_on_hash = hash(key) % self.__capacity
-        self.__count_not_empty_elem -= 1
         while True:
             if self.__slots[place_dependent_on_hash]:
                 if self.__slots[place_dependent_on_hash].key == key:
-                    element_to_return = self.__slots[place_dependent_on_hash].value
-                    self.__slots[place_dependent_on_hash].key = False
+                    element_to_return = (
+                        self.__slots[place_dependent_on_hash].value)
+                    self.__slots[place_dependent_on_hash] = False
+                    self.__count_not_empty_elem -= 1
                     return element_to_return
 
                 place_dependent_on_hash += 1
@@ -125,22 +126,5 @@ class Dictionary:
             else:
                 raise KeyError("The key does not exist")
 
-
-
-d = Dictionary(solo=1, duo=2)
-d.update(a=22, b=11)
-d[1] = "123"
-d[2] = "456"
-d[2] = "789"
-d[12] = "qwe"
-d[4] = "rty"
-d[6] = "zxc"
-d[1] = "jkl"
-d[9] = "asd"
-del d[9]
-d[17] = "mellstroy"
-
-d[9] = "yui"
-print(d.pop(9))
-print(d.get(17))
-print(len(d))
+    def __iter__(self) -> None:
+        return (element for element in self.__slots if element)

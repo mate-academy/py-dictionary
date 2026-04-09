@@ -7,7 +7,7 @@ from typing import Any
 @dataclass
 class Element:
     key: Hashable
-    hash: int
+    key_hash: int
     value: Any
 
 
@@ -23,25 +23,30 @@ class Dictionary:
         for key, value in kwargs.items():
             self[key] = value
 
-
     def __setitem__(self, key: Hashable, value: Any) -> None:
         key_exist = any(key == elem.key for elem in self.__slots if elem)
-        if self.__count_not_none_elem + 1 > int(self.__capacity * self.LOAD_FACTOR) and not key_exist:
+        if (self.__count_not_none_elem + 1
+                > int(self.__capacity * self.LOAD_FACTOR) and not key_exist):
             self.resize_table()
             self.__slots = deepcopy(self.__new_slots)
             self.__new_slots.clear()
 
         self.set_place(key, value, self.__slots)
 
-    def set_place(self, key: Hashable, value: Any, list_of_slots: list) -> None:
+    def set_place(self, key: Hashable, value: Any,
+                  list_of_slots: list) -> None:
         place_dependent_on_hash = hash(key) % self.__capacity
         while True:
-            if not list_of_slots[place_dependent_on_hash] or list_of_slots[place_dependent_on_hash].key == key:
-                self.__count_not_none_elem += 1 if list_of_slots is self.__slots  and not list_of_slots[place_dependent_on_hash] else 0
+            if (not list_of_slots[place_dependent_on_hash]
+                    or list_of_slots[place_dependent_on_hash].key == key):
+                self.__count_not_none_elem += 1 \
+                    if (list_of_slots is self.__slots
+                        and not list_of_slots[place_dependent_on_hash]) \
+                    else 0
                 list_of_slots[place_dependent_on_hash] = Element(
                     key=key,
                     value=value,
-                    hash=hash(key)
+                    key_hash=hash(key)
                 )
                 break
             else:
@@ -59,10 +64,38 @@ class Dictionary:
         return sum(1 for elem in self.__slots if elem)
 
     def __getitem__(self, key: Hashable) -> Any:
-        pass
+        place_dependent_on_hash = hash(key) % self.__capacity
+        while True:
+            if self.__slots[place_dependent_on_hash]:
+                if self.__slots[place_dependent_on_hash].key == key:
+                    return self.__slots[place_dependent_on_hash].value
+
+                place_dependent_on_hash += 1
+                place_dependent_on_hash %= self.__capacity
+            else:
+                raise KeyError("The key does not exist")
+
+    def __len__(self) -> int:
+        return self.__count_not_none_elem
+
+    def clear(self) -> None:
+        self.__capacity = 8
+        self.__slots = [None] * self.__capacity
+        self.__count_not_none_elem = 0
+
+    def get(self, key: Hashable, default_value: Any = 0) -> Any:
+        try:
+            return self[key]
+        except KeyError:
+            return default_value
+
+    def update(self, **kwargs: Any) -> None:
+        for key, value in kwargs.items():
+            self[key] = value
 
 
 d = Dictionary(solo=1, duo=2)
+d.update(a=22, b=11)
 d[1] = "123"
 d[2] = "456"
 d[2] = "789"
@@ -71,4 +104,5 @@ d[4] = "rty"
 d[6] = "zxc"
 d[1] = "jkl"
 d[9] = "asd"
-print
+print(d.get("b"))
+print(len(d))

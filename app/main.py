@@ -23,8 +23,9 @@ class Dictionary:
             self[key] = value
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
+        key_exist = any(key == elem.key for elem in self.__slots if elem)
         if (self.__count_not_empty_elem + 1
-                > int(self.__capacity * self.LOAD_FACTOR)):
+                > int(self.__capacity * self.LOAD_FACTOR) and not key_exist):
             self.resize_table()
             self.__slots = self.__new_slots
             self.__new_slots = []
@@ -57,9 +58,6 @@ class Dictionary:
         for element in self.__slots:
             if element:
                 self.set_place(element.key, element.value, self.__new_slots)
-
-    def count_not_none_elem(self) -> int:
-        return sum(1 for elem in self.__slots if elem)
 
     def __getitem__(self, key: Hashable) -> Any:
         place_dependent_on_hash = hash(key) % self.__capacity

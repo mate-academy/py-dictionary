@@ -17,15 +17,14 @@ class Dictionary:
         self.__capacity = 8
         self.__slots: list[None | Element | bool] = [None] * self.__capacity
         self.__new_slots = []
-        self.__count_not_empty_elem = 0
+        self.__existing_keys = set()
 
         for key, value in kwargs.items():
             self[key] = value
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
-        key_exist = any(key == elem.key for elem in self.__slots if elem)
-        if (self.__count_not_empty_elem + 1
-                > int(self.__capacity * self.LOAD_FACTOR) and not key_exist):
+        if (len(self.__existing_keys) + 1
+                > int(self.__capacity * self.LOAD_FACTOR) and key not in self.__existing_keys):
             self.resize_table()
             self.__slots = self.__new_slots
             self.__new_slots = []
@@ -38,10 +37,10 @@ class Dictionary:
         while True:
             if (not list_of_slots[place_dependent_on_hash]
                     or list_of_slots[place_dependent_on_hash].key == key):
-                self.__count_not_empty_elem += 1 \
-                    if (list_of_slots is self.__slots
-                        and not list_of_slots[place_dependent_on_hash]) \
-                    else 0
+                if (list_of_slots is self.__slots
+                    and not list_of_slots[place_dependent_on_hash]):
+                    self.__existing_keys.add(key)
+
                 list_of_slots[place_dependent_on_hash] = Element(
                     key=key,
                     value=value,
@@ -75,12 +74,12 @@ class Dictionary:
                 raise KeyError("The key does not exist")
 
     def __len__(self) -> int:
-        return self.__count_not_empty_elem
+        return len(self.__existing_keys)
 
     def clear(self) -> None:
         self.__capacity = 8
         self.__slots = [None] * self.__capacity
-        self.__count_not_empty_elem = 0
+        self.__existing_keys = set()
 
     def get(self, key: Hashable, default_value: Any = None) -> Any:
         try:
@@ -98,7 +97,7 @@ class Dictionary:
             if self.__slots[place_dependent_on_hash]:
                 if self.__slots[place_dependent_on_hash].key == key:
                     self.__slots[place_dependent_on_hash] = False
-                    self.__count_not_empty_elem -= 1
+                    self.__existing_keys.remove(key)
                     break
 
                 place_dependent_on_hash += 1
@@ -114,7 +113,7 @@ class Dictionary:
                     element_to_return = (
                         self.__slots[place_dependent_on_hash].value)
                     self.__slots[place_dependent_on_hash] = False
-                    self.__count_not_empty_elem -= 1
+                    self.__existing_keys.remove(key)
                     return element_to_return
 
                 place_dependent_on_hash += 1
@@ -124,3 +123,18 @@ class Dictionary:
 
     def __iter__(self) -> Generator:
         return (element.key for element in self.__slots if element)
+
+d = Dictionary(solo=11, duo=22)
+d.update(top=1, pot=2)
+d[4] = "123"
+d[2] = "qwe"
+print(len(d))
+del d[2]
+print(len(d))
+d[3] = "456"
+print(d.pop(3))
+print(len(d))
+
+for i in d:
+    print(i)
+

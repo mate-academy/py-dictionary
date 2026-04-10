@@ -24,7 +24,8 @@ class Dictionary:
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
         if (len(self.__existing_keys) + 1
-                > int(self.__capacity * self.LOAD_FACTOR) and key not in self.__existing_keys):
+                > int(self.__capacity * self.LOAD_FACTOR)
+                and key not in self.__existing_keys):
             self.resize_table()
             self.__slots = self.__new_slots
             self.__new_slots = []
@@ -38,7 +39,7 @@ class Dictionary:
             if (not list_of_slots[place_dependent_on_hash]
                     or list_of_slots[place_dependent_on_hash].key == key):
                 if (list_of_slots is self.__slots
-                    and not list_of_slots[place_dependent_on_hash]):
+                        and not list_of_slots[place_dependent_on_hash]):
                     self.__existing_keys.add(key)
 
                 list_of_slots[place_dependent_on_hash] = Element(
@@ -123,18 +124,3 @@ class Dictionary:
 
     def __iter__(self) -> Generator:
         return (element.key for element in self.__slots if element)
-
-d = Dictionary(solo=11, duo=22)
-d.update(top=1, pot=2)
-d[4] = "123"
-d[2] = "qwe"
-print(len(d))
-del d[2]
-print(len(d))
-d[3] = "456"
-print(d.pop(3))
-print(len(d))
-
-for i in d:
-    print(i)
-

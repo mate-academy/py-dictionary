@@ -62,3 +62,8 @@ class Dictionary:
 
     def __len__(self) -> int:
         return self.length
+
+    def clear(self) -> None:
+        self.capacity = 8
+        self.length = 0
+        self.hash_table = [None] * self.capacity

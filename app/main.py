@@ -24,7 +24,9 @@ class Dictionary:
             entry = self.hash_table[index]
 
             if entry is None:
-                target_index = first_deleted_index if first_deleted_index is not None else index
+                target_index = first_deleted_index \
+                    if first_deleted_index is not None \
+                    else index
                 self.hash_table[target_index] = (key, hash_key, value)
                 self.length += 1
                 return

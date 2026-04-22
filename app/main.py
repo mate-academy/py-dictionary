@@ -47,7 +47,7 @@ class Dictionary:
         i = hash(key) % self.capacity
         while True:
             if self.table[i] is None:
-                raise KeyError(key)
+                raise KeyError(f"Key {key} not found in Dictionary")
             if self.table[i].key == key:
                 return self.table[i].value
 

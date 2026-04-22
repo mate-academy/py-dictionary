@@ -74,7 +74,7 @@ class Dictionary:
     def __iter__(self) -> Any:
         for entry in self.hash_table:
             if entry is not None and entry is not self.DELETED:
-                yield entry
+                yield entry[0]
 
     def clear(self) -> None:
         self.__init__()

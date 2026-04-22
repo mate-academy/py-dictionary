@@ -2,19 +2,19 @@ class Dictionary:
     def __init__(self) -> None:
         self.capacity = 10
         self.threshold = 0.8
-        self.size = 0
+        self.length = 0
         self.table = [[] for _ in range(self.capacity)]
 
     def __setitem__(self, key: object, value: object) -> None:
-        if self.size / self.capacity > self.threshold:
+        if self.length / self.capacity > self.threshold:
             self.capacity *= 2
             new_table = [[] for _ in range(self.capacity)]
-            self.size = 0
+            self.length = 0
 
             for node in self.table:
                 for item in node:
                     new_table[item.hash % self.capacity].append(item)
-                    self.size += 1
+                    self.length += 1
 
             self.table = new_table
 
@@ -28,7 +28,7 @@ class Dictionary:
                 return
 
         node.append(Item(key, hash(key), value))
-        self.size += 1
+        self.length += 1
 
     def __getitem__(self, key: object) -> object:
         for item in self.table[hash(key) % self.capacity]:
@@ -36,10 +36,10 @@ class Dictionary:
                 continue
             if item.key == key:
                 return item.value
-        raise KeyError()
+        raise KeyError("Key not found")
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
 
 class Item:

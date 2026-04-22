@@ -100,6 +100,6 @@ class Dictionary:
         self.length = 0
 
         for entry in old_table:
-            if entry is not None:
+            if entry is not None and entry is not self.DELETED:
                 key, value, _ = entry
                 self.__setitem__(key, value)

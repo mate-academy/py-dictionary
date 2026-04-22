@@ -18,17 +18,22 @@ class Dictionary:
 
         hash_key = hash(key)
         index = hash_key % len(self.hash_table)
+        first_deleted_index = None
 
         while True:
             entry = self.hash_table[index]
 
             if entry is None:
-                self.hash_table[index] = (key, value, hash_key)
+                target_index = first_deleted_index if first_deleted_index is not None else index
+                self.hash_table[target_index] = (key, hash_key, value)
                 self.length += 1
                 return
 
-            if entry[0] == key:
-                self.hash_table[index] = (key, value, hash_key)
+            if entry is self.DELETED:
+                if first_deleted_index is None:
+                    first_deleted_index = index
+            elif entry[0] == key:
+                self.hash_table[index] = (key, hash_key, value)
                 return
 
             index = (index + 1) % len(self.hash_table)
@@ -39,9 +44,9 @@ class Dictionary:
         start_index = index
 
         while self.hash_table[index] is not None:
-            stored_key, value, _ = self.hash_table[index]
-            if stored_key == key:
-                return value
+            entry = self.hash_table[index]
+            if entry is not self.DELETED and entry[0] == key:
+                return entry[2]
 
             index = (index + 1) % len(self.hash_table)
 
@@ -95,11 +100,11 @@ class Dictionary:
 
     def recalculate_hashes(self) -> None:
         old_table = self.hash_table
-        new_capacity = len(old_table) * 2
-        self.hash_table = [None] * new_capacity
+        self.capacity = len(old_table) * 2
+        self.hash_table = [None] * self.capacity
         self.length = 0
 
         for entry in old_table:
             if entry is not None and entry is not self.DELETED:
-                key, value, _ = entry
+                key, _, value = entry
                 self.__setitem__(key, value)

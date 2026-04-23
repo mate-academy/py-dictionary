@@ -4,11 +4,17 @@
 
 ## Purpose of this Task
 
-This task is designed to challenge you to think critically about how Python's built-in data structures work behind the scenes. By implementing your own `Dictionary` class, you'll gain a deeper understanding of hash tables, memory management, and algorithmic efficiency. These are core concepts in computer science that will serve as a strong foundation for your future development as a programmer.
+This task is designed to challenge you to think critically 
+about how Python's built-in data structures work behind the scenes.
+By implementing your own `Dictionary` class, you'll gain a deeper understanding
+of hash tables, memory management, and algorithmic efficiency.
+These are core concepts in computer science that will serve as a
+strong foundation for your future development as a programmer.
 
 ## Task Overview
 
-Your goal is to create a custom `Dictionary` class that mimics the behavior of Python's built-in `dict`. You'll implement several key methods to manage key-value pairs in a way that is both efficient and robust.
+Your goal is to create a custom `Dictionary` class that mimics the behavior of Python's built-in `dict`.
+You'll implement several key methods to manage key-value pairs in a way that is both efficient and robust.
 
 ### Methods to Implement
 
@@ -33,7 +39,8 @@ For a detailed explanation of hash tables and how they work, you can refer to th
 
 ### Storage Structure
 
-You'll store each key-value pair as a node in a hash table. Each node should contain the following information:
+You'll store each key-value pair as a node in a hash table.
+Each node should contain the following information:
 - `key`
 - `hash`
 - `value`
@@ -55,13 +62,17 @@ These methods will help you build a more complete understanding of how dictionar
 
 ## Testing Your Dictionary
 
-You can test your `Dictionary` class using a custom class `Point` that implements the `__hash__` and `__eq__` magic methods. This will give you practical experience with how custom objects can be used as keys in dictionaries.
+You can test your `Dictionary` class
+using a custom class `Point` that implements the `__hash__` and `__eq__` magic methods.
+This will give you practical experience with how custom objects can be used as keys in dictionaries.
 
-**Important:** Ensure that you implement your own dictionary from scratch. Do not use Python's built-in `dict` for this task.
+**Important:** Ensure that you implement your own dictionary from scratch.
+Do not use Python's built-in `dict` for this task.
 
 ## Checklist
 
-Before you push your solution, make sure to go through this [checklist](checklist.md) to ensure your code meets all the requirements.
+Before you push your solution, make sure to go through this [checklist](checklist.md) 
+to ensure your code meets all the requirements.
 
 ---
 

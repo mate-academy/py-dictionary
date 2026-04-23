@@ -16,7 +16,7 @@ class Dictionary:
 
     def __init__(self) -> None:
         self._table: list[Node | None] = [None] * self.INITIAL_CAPACITY
-        self._length = 0
+        self.length = 0
         self._capacity = self.INITIAL_CAPACITY
 
     @property
@@ -41,7 +41,7 @@ class Dictionary:
         old_table = self._table
         self._capacity *= self.CAPACITY_MULTIPLIER
         self._table = [None] * self._capacity
-        self._length = 0
+        self.length = 0
         for node in old_table:
             if node is not None:
                 self[node.key] = node.value
@@ -49,11 +49,11 @@ class Dictionary:
     def __setitem__(self, key: Hashable, value: Any) -> None:
         index = self._calculate_index(key)
         if (node := self._table[index]) is None:
-            if self._length + 1 > self._threshold:
+            if self.length + 1 > self._threshold:
                 self._resize()
                 index = self._calculate_index(key)
             self._table[index] = Node(key, value, hash(key))
-            self._length += 1
+            self.length += 1
         else:
             node.value = value
 
@@ -64,7 +64,7 @@ class Dictionary:
         return node.value
 
     def __len__(self) -> int:
-        return self._length
+        return self.length
 
     def __iter__(self) -> Iterator[Hashable]:
         for node in self._table:
@@ -82,7 +82,7 @@ class Dictionary:
 
     def clear(self) -> None:
         self._table = [None] * self.INITIAL_CAPACITY
-        self._length = 0
+        self.length = 0
         self._capacity = self.INITIAL_CAPACITY
 
     def update(self, other: Any) -> None:
@@ -97,7 +97,7 @@ class Dictionary:
         except KeyError:
             if default is not None:
                 return default
-            raise KeyError(key)
+            raise KeyError(f"Key '{key}' not found")
 
     def __delitem__(self, key: Hashable) -> None:
         index = self._calculate_index(key)
@@ -106,13 +106,13 @@ class Dictionary:
             raise KeyError(f"Key '{key}' not found")
 
         self._table[index] = None
-        self._length -= 1
+        self.length -= 1
 
         next_index = self._linear_probing(index)
 
         while self._table[next_index] is not None:
             node_to_rehash = self._table[next_index]
             self._table[next_index] = None
-            self._length -= 1
+            self.length -= 1
             self[node_to_rehash.key] = node_to_rehash.value
             next_index = self._linear_probing(next_index)

@@ -9,7 +9,7 @@ class Node:
     hash_value: int
 
 
-class CustomDict:
+class Dictionary:
     INITIAL_CAPACITY = 8
     LOAD_FACTOR = 2 / 3
     CAPACITY_MULTIPLIER = 2
@@ -29,12 +29,12 @@ class CustomDict:
     def _calculate_index(self, key: Hashable) -> int:
         hash_value = hash(key)
         index = hash_value % self._capacity
-        while (
-                (node := self._table[index]) is not None
-                and node.hash_value != hash_value
-                and node.key != key
-        ):
+
+        while (node := self._table[index]) is not None:
+            if node.hash_value == hash_value and node.key == key:
+                return index
             index = self._linear_probing(index)
+
         return index
 
     def _resize(self) -> None:

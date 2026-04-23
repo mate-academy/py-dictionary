@@ -1,6 +1,14 @@
 from typing import Any, Optional
 
 
+class _Deleted:
+    def __repr__(self) -> str:
+        return "<DELETED>"
+
+
+DELETED = _Deleted()
+
+
 class Node:
     def __init__(self, key: Any, value: Any) -> None:
         self.key = key
@@ -11,47 +19,68 @@ class Node:
 class Dictionary:
     def __init__(self) -> None:
         self.capacity: int = 8
-        self.table: list[Optional[Node]] = [None] * self.capacity
+        self.hash_table: list[
+            Optional[Node | _Deleted]
+        ] = [None] * self.capacity
         self.length: int = 0
 
     def __setitem__(self, key: Any, value: Any) -> None:
-        n = Node(key, value)
-        i = hash(n.key) % self.capacity
-        flag = False
-        while not flag:
-            if self.table[i] is None:
-                if (self.length + 1) / self.capacity <= 2 / 3:
-                    self.table[i] = n
-                    self.length += 1
-                    flag = True
-                else:
-                    self.capacity *= 2
-                    temp = self.table.copy()
-                    self.table = [None] * self.capacity
-                    self.length = 0
+        if (self.length + 1) / self.capacity > 2 / 3:
+            self._resize()
 
-                    for slot in temp:
-                        if slot is not None:
-                            self.__setitem__(slot.key, slot.value)
+        idx = hash(key) % self.capacity
 
-                    self.__setitem__(n.key, n.value)
-                    flag = True
-            else:
-                if self.table[i].key == n.key:
-                    self.table[i].value = n.value
-                    flag = True
-                else:
-                    i = (i + 1) % self.capacity
+        while self.hash_table[idx] is not None:
+            node = self.hash_table[idx]
+            if node is not DELETED and node.key == key:
+                node.value = value
+                return
+            if node is DELETED:
+                break
+            idx = (idx + 1) % self.capacity
+
+        self.hash_table[idx] = Node(key, value)
+        self.length += 1
 
     def __getitem__(self, key: Any) -> Any:
-        i = hash(key) % self.capacity
-        while True:
-            if self.table[i] is None:
-                raise KeyError(f"Key {key} not found in Dictionary")
-            if self.table[i].key == key:
-                return self.table[i].value
+        idx = hash(key) % self.capacity
+        start_idx = idx
 
-            i = (i + 1) % self.capacity
+        while self.hash_table[idx] is not None:
+            node = self.hash_table[idx]
+            if node is not DELETED and node.key == key:
+                return node.value
+            idx = (idx + 1) % self.capacity
+            if idx == start_idx:
+                break
+
+        raise KeyError(f"Key {key} not found")
+
+    def __delitem__(self, key: Any) -> None:
+        idx = hash(key) % self.capacity
+        start_idx = idx
+
+        while self.hash_table[idx] is not None:
+            node = self.hash_table[idx]
+            if node is not DELETED and node.key == key:
+                self.hash_table[idx] = DELETED
+                self.length -= 1
+                return
+            idx = (idx + 1) % self.capacity
+            if idx == start_idx:
+                break
+
+        raise KeyError(f"Key {key} not found")
 
     def __len__(self) -> int:
         return self.length
+
+    def _resize(self) -> None:
+        old_table = self.hash_table
+        self.capacity *= 2
+        self.hash_table = [None] * self.capacity
+        self.length = 0
+
+        for item in old_table:
+            if isinstance(item, Node):
+                self.__setitem__(item.key, item.value)

@@ -1,84 +1,85 @@
-from typing import Any, Iterator
+from dataclasses import dataclass
+from typing import Hashable, Any
 
 
+@dataclass(slots=True)
 class Node:
-    def __init__(self, key: Any, value: Any, hash_value: int) -> None:
-        self.key = key
-        self.value = value
-        self.hash = hash_value
+    key: Hashable
+    value: Any
+    hash_value: int
 
 
 class Dictionary:
-    def __init__(self, initial_capacity: int = 8) -> None:
-        self.capacity = initial_capacity
-        self.length = 0
-        self.table: list[Node | None] = [None] * self.capacity
-        self.load_factor = 2 / 3
+    INITIAL_CAPACITY = 8
+    LOAD_FACTOR = 2 / 3
+    CAPACITY_MULTIPLIER = 2
+
+    def __init__(self) -> None:
+        self._table: list[Node | None] = [None] * self.INITIAL_CAPACITY
+        self._size = 0
+        self._capacity = self.INITIAL_CAPACITY
+
+    @property
+    def _threshold(self) -> float:
+        return self._capacity * self.LOAD_FACTOR
 
     def __len__(self) -> int:
-        return self.length
+        return self._size
 
-    def _get_index(self, key: Any, hash_value: int) -> int:
-        index = hash_value % self.capacity
+    def _linear_probing(self, index: int) -> int:
+        return (index + 1) % self._capacity
 
-        while self.table[index] is not None:
-            node = self.table[index]
-            if node.hash == hash_value and node.key == key:
-                return index
-
-            index = (index + 1) % self.capacity
+    def _calculate_index(self, key: Hashable) -> int:
+        hash_value = hash(key)
+        index = hash_value % self._capacity
+        while (
+                (node := self._table[index]) is not None
+                and (node.hash_value != hash_value or node.key != key)
+        ):
+            index = self._linear_probing(index)
 
         return index
 
-    def __setitem__(self, key: Any, value: Any) -> None:
-        if self.length >= self.capacity * self.load_factor:
-            self._resize()
-
-        hash_value = hash(key)
-        index = self._get_index(key, hash_value)
-
-        if self.table[index] is None:
-            self.table[index] = Node(key, value, hash_value)
-            self.length += 1
-        else:
-            self.table[index].value = value
-
-    def __getitem__(self, key: Any) -> Any:
-        hash_value = hash(key)
-        index = self._get_index(key, hash_value)
-
-        node = self.table[index]
-        if node is None:
-            raise KeyError(key)
-
-        return node.value
-
     def _resize(self) -> None:
-        old_table = self.table
-        self.capacity *= 2
-        self.table = [None] * self.capacity
-        self.length = 0
+        old_table = self._table
+        self._capacity *= self.CAPACITY_MULTIPLIER
+        self._table = [None] * self._capacity
+        self._size = 0
 
         for node in old_table:
             if node is not None:
                 self[node.key] = node.value
 
-    def get(self, key: Any, default: Any = None) -> Any:
-        hash_value = hash(key)
-        index = self._get_index(key, hash_value)
-        node = self.table[index]
-        return node.value if node is not None else default
+    def __setitem__(self, key: Hashable, value: Any) -> None:
+        index = self._calculate_index(key)
 
-    def clear(self) -> None:
-        self.capacity = 8
-        self.length = 0
-        self.table = [None] * self.capacity
+        if self._table[index] is None:
+            if self._size + 1 > self._threshold:
+                self._resize()
+                index = self._calculate_index(key)
+            self._table[index] = Node(key, value, hash(key))
+            self._size += 1
+        else:
+            self._table[index].value = value
 
-    def update(self, other: dict) -> None:
-        for key, value in other.items():
-            self[key] = value
+    def __getitem__(self, key: Hashable) -> Any:
+        index = self._calculate_index(key)
+        if (node := self._table[index]) is None:
+            raise KeyError(key)
+        return node.value
 
-    def __iter__(self) -> Iterator[Any]:
-        for node in self.table:
-            if node is not None:
-                yield node.key
+    def __delitem__(self, key: Hashable) -> None:
+        index = self._calculate_index(key)
+        if self._table[index] is None:
+            raise KeyError(key)
+
+        self._table[index] = None
+        self._size -= 1
+
+        index = self._linear_probing(index)
+        while self._table[index] is not None:
+            node_to_rehash = self._table[index]
+            self._table[index] = None
+            self._size -= 1
+            self[node_to_rehash.key] = node_to_rehash.value
+            index = self._linear_probing(index)

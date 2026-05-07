@@ -10,14 +10,16 @@ class Dictionary:
 
     def __setitem__(self, key: Any, value: Any) -> None:
         index = hash(key) % self.capacity
+        key_hash = hash(key)
         while self.hash_list[index] is not None:
-            if self.hash_list[index][0] == key:
-                self.hash_list[index] = [key, value]
+            if (self.hash_list[index][0] == key_hash
+                    and self.hash_list[index][1] == key):
+                self.hash_list[index] = [key_hash, key, value]
                 return
 
             index = (index + 1) % self.capacity
 
-        self.hash_list[index] = [key, value]
+        self.hash_list[index] = [key_hash, key, value]
         self.length += 1
 
         if self.length > self.load_factor * self.capacity:
@@ -28,25 +30,18 @@ class Dictionary:
 
             for obj in old_hash_list:
                 if obj is not None:
-                    self.__setitem__(obj[0], obj[1])
-
-    def __delitem__(self, key: Any) -> None:
-        index = hash(key) % self.capacity
-        while self.hash_list[index] is not None:
-            if self.hash_list[index][0] == key:
-                self.hash_list[index][1] = None
-        self.length -= 1
+                    self.__setitem__(obj[1], obj[2])
 
     def __getitem__(self, key: Any) -> Any:
         index = hash(key) % self.capacity
         while self.hash_list[index] is not None:
-            old_key, value = self.hash_list[index]
-            if old_key == key:
+            key_hash, old_key, value = self.hash_list[index]
+            if key_hash == hash(key) and old_key == key:
                 return value
 
             index = (index + 1) % self.capacity
 
-        raise KeyError
+        raise KeyError(f"Key {key} not found")
 
     def __len__(self) -> int:
         return self.length

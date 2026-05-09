@@ -76,6 +76,6 @@ class Dictionary:
                     self.table[index] = TOMBSTONE
                     self.count -= 1
                     return
-    
+
     def __len__(self) -> int:
         return self.count

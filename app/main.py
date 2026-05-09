@@ -24,7 +24,7 @@ class Dictionary:
                 key, _, value = slot
                 self[key] = value
 
-    def _probe(self, key_hash) -> Generator[int, None, None]:
+    def _probe(self, key_hash: int) -> Generator[int, None, None]:
         index = self._index(key_hash)
         perturb = key_hash
 
@@ -33,10 +33,10 @@ class Dictionary:
             index = (index * 5 + 1 + perturb) & (self.size - 1)
             perturb >>= 5
 
-    def __setitem__(self, key, value) -> None:
+    def __setitem__(self, key: any, value: any) -> None:
         if self.count * 3 >= self.size * 2:
             self._resize()
-        
+
         key_hash = hash(key)
 
         for index in self._probe(key_hash):
@@ -49,9 +49,9 @@ class Dictionary:
                 self.table[index] = (key, key_hash, value)
                 return
 
-    def __getitem__(self, key) -> any:
+    def __getitem__(self, key: any) -> any:
         key_hash = hash(key)
-        
+
         for index in self._probe(key_hash):
             slot = self.table[index]
 
@@ -62,7 +62,7 @@ class Dictionary:
                 if slot[0] == key and slot[1] == key_hash:
                     return slot[2]
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: any) -> None:
         key_hash = hash(key)
 
         for index in self._probe(key_hash):
@@ -76,6 +76,6 @@ class Dictionary:
                     self.table[index] = TOMBSTONE
                     self.count -= 1
                     return
-                
+       
     def __len__(self) -> int:
         return self.count

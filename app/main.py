@@ -5,7 +5,6 @@ TOMBSTONE = object()
 
 
 class Dictionary:
-    pass
     def __init__(self, size: int = 8) -> None:
         self.size = size
         self.count = 0

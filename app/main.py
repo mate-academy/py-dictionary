@@ -56,7 +56,7 @@ class Dictionary:
             slot = self.table[index]
 
             if slot is None:
-                raise KeyError(key)
+                raise KeyError(f"Error: {key} does not exist.")
 
             if slot is not TOMBSTONE:
                 if slot[0] == key and slot[1] == key_hash:
@@ -69,7 +69,7 @@ class Dictionary:
             slot = self.table[index]
 
             if slot is None:
-                raise KeyError(key)
+                raise KeyError(f"Error: {key} does not exist.")
 
             if slot is not TOMBSTONE:
                 if slot[0] == key and slot[1] == key_hash:

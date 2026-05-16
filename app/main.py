@@ -37,7 +37,10 @@ class Dictionary:
 
     def __resize__(self, capacity: int) -> None:
         old_nodes = self.nodes
-        self.__init__(capacity=capacity)
+        self.length = capacity
+        self.nodes = [None] * capacity
+        self.size = 0
+        self.load = int(capacity * 2 / 3)
         for node in old_nodes:
             if node is not None:
                 self.__setitem__(node.key, node.value)
@@ -55,7 +58,10 @@ class Dictionary:
         return self.size
 
     def clear(self) -> None:
-        self.__init__()
+        self.length = 8
+        self.nodes = [None] * 8
+        self.size = 0
+        self.load = int(self.length * 2 / 3)
 
     def __delitem__(self, key: Any) -> None:
         hash_id = hash(key)
@@ -63,7 +69,7 @@ class Dictionary:
         while self.nodes[index] is not None:
             if self.nodes[index].key == key:
                 self.nodes[index] = None
-                self.__resize__(capacity=self.length)
+                self.size -= 1
                 return
             index = (index + 1) % self.length
         raise KeyError(f"Key '{key}' not found.")

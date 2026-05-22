@@ -17,15 +17,17 @@ class Dictionary:
         if bucket is None:
             self.table[index] = [node]
             self.size += 1
-            return
+        else:
+            for existing_node in bucket:
+                if existing_node.key == key:
+                    existing_node.value = value
+                    return
 
-        for existing_node in bucket:
-            if existing_node.key == key:
-                existing_node.value = value
-                return
+            bucket.append(node)
+            self.size += 1
 
-        self.table[index].append(node)
-        self.size += 1
+        if self.size / self.capacity > self.load_factor:
+            self.resize()
 
     def __getitem__(self, key: int) -> Any:
         h = hash(key)
@@ -33,29 +35,32 @@ class Dictionary:
         bucket = self.table[index]
 
         if bucket is None:
-            raise KeyError
+            raise KeyError("Key not found")
 
         for existing_node in bucket:
             if existing_node.key == key:
                 return existing_node.value
-        raise KeyError
+
+        raise KeyError("Key not found")
 
     def __len__(self) -> int:
         return self.size
 
     def resize(self) -> None:
         old_table = self.table
-        if (self.size / self.capacity) > self.load_factor:
-            new_capacity = self.capacity * 2
-            self.capacity = new_capacity
-            self.table = [None] * self.capacity
-            self.size = 0
+        self.capacity *= 2
+        self.table = [None] * self.capacity
+        self.size = 0
 
-            for bucket in old_table:
-                if bucket is None:
-                    continue
-                for node in bucket:
-                    self.__setitem__(node.key, node.value)
+        for bucket in old_table:
+            if bucket is None:
+                continue
+            for node in bucket:
+                self[node.key] = node.value
+
+    def clear(self) -> None:
+        self.table = [None] * self.capacity
+        self.size = 0
 
 
 class Node:

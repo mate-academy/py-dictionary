@@ -4,7 +4,7 @@ from typing import Any
 class Dictionary:
     def __init__(self, capacity: int = 8, load_factor: float = 0.75) -> None:
         self.capacity = capacity
-        self.load_factor = load_factor
+        self.load_factor = load_factor  # MUST be float attribute
         self.table = [None] * self.capacity
         self.size = 0
 
@@ -48,6 +48,7 @@ class Dictionary:
 
     def resize(self) -> None:
         old_table = self.table
+
         self.capacity *= 2
         self.table = [None] * self.capacity
         self.size = 0

@@ -23,7 +23,7 @@ class Dictionary:
         self.hash_table[index] = [key, hash(key), value]
         self.length += 1
 
-    def __getitem__(self, key: Any) -> None:
+    def __getitem__(self, key: Any) -> Any:
         index = hash(key) % self.capacity
 
         while self.hash_table[index] is not None:
@@ -32,7 +32,7 @@ class Dictionary:
                 return value
             index = (index + 1) % self.capacity
 
-        raise KeyError(key)
+        raise KeyError(">" + str(key) + "< not found in the dictionary.")
 
     def __len__(self) -> int:
         return self.length

@@ -12,15 +12,15 @@ class Node:
 class Dictionary:
     def __init__(self) -> None:
         self.capacity = 8
-        self.size = 0
+        self.length = 0
         self.load_factor = 0.75
-        self.table = [None] * self.capacity
+        self.hash_table = [None] * self.capacity
 
     def __setitem__(self, key: Any, value: Any) -> None:
         hash_value = hash(key)
         index = hash_value % self.capacity
 
-        current = self.table[index]
+        current = self.hash_table[index]
 
         while current is not None:
             if current.hash == hash_value and current.key == key:
@@ -30,18 +30,18 @@ class Dictionary:
             current = current.next
 
         new_node = Node(key, value, hash_value)
-        new_node.next = self.table[index]
-        self.table[index] = new_node
-        self.size += 1
+        new_node.next = self.hash_table[index]
+        self.hash_table[index] = new_node
+        self.length += 1
 
-        if self.size / self.capacity >= self.load_factor:
+        if self.length / self.capacity >= self.load_factor:
             self._resize()
 
     def __getitem__(self, key: Any) -> Any:
         hash_value = hash(key)
         index = hash_value % self.capacity
 
-        current = self.table[index]
+        current = self.hash_table[index]
 
         while current is not None:
             if current.hash == hash_value and current.key == key:
@@ -49,19 +49,19 @@ class Dictionary:
 
             current = current.next
 
-        raise KeyError(key)
+        raise KeyError(f"Key '{key}' not found")
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def _resize(self) -> None:
-        old_table = self.table
+        old_hash_table = self.hash_table
 
         self.capacity *= 2
-        self.table = [None] * self.capacity
-        self.size = 0
+        self.hash_table = [None] * self.capacity
+        self.length = 0
 
-        for node in old_table:
+        for node in old_hash_table:
             current = node
 
             while current is not None:

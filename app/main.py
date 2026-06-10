@@ -87,9 +87,9 @@ class Dictionary:
 
     def clear(self) -> None:
         self.length = 0
-        self.key_table: list = [None] * self.capacity
-        self.hash_table: list = [None] * self.capacity
-        self.value_table: list = [None] * self.capacity
+        self.key_table = [None] * self.capacity
+        self.hash_table = [None] * self.capacity
+        self.value_table = [None] * self.capacity
 
     def __delitem__(self, key: Hashable) -> None:
         self.pop(key)

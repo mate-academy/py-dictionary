@@ -57,7 +57,7 @@ class Dictionary:
             key, key_hash, self.capacity, self.key_table, self.hash_table
         )
         if self.hash_table[index] is None:
-            raise KeyError
+            raise KeyError(f"Key {key} not found")
         return self.value_table[index]
 
     def get(self, key: Hashable, default: Any = None) -> Any:
@@ -100,7 +100,7 @@ class Dictionary:
             key, key_hash, self.capacity, self.key_table, self.hash_table
         )
         if self.hash_table[index] is None:
-            raise KeyError
+            raise KeyError(f"Key {key} not found")
         value = self.value_table[index]
         self.key_table[index] = None
         self.hash_table[index] = None

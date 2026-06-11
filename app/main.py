@@ -74,7 +74,7 @@ class Dictionary:
         Le re-hachage de chaque nœud garantit une transition fluide.
         """
         old_buckets = self.buckets
-       
+
         # On double la capacité (croissance linéaire de la structure)
         self.capacity *= 2
 

@@ -41,7 +41,7 @@ class Dictionary:
             if self.table[index].key == key:
                 return self.table[index].value
             index = (index + 1) % self.capacity
-        raise KeyError(key)
+        raise KeyError(f"Key not found: {key}")
 
     def __len__(self) -> int:
         return self.size

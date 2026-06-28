@@ -26,12 +26,12 @@ class Node:
     def value(self, value: Any) -> None:
         self._value = value
 
-    def __repr__(self) -> str:
-        return f"{self.key} (#{self.hash_value}): {self.value}"
-
     @property
     def hash_value(self) -> Any:
         return self._hash_value
+
+    def __repr__(self) -> str:
+        return f"{self._key} (#{self._hash_value}): {self._value}"
 
 
 class Dictionary:
@@ -40,67 +40,71 @@ class Dictionary:
     initial_size: int = 8
 
     def __init__(self) -> None:
-        self.length = 0
-        self.hash_table: list = [None] * self.initial_size
+        self._length = 0
+        self._hash_table: list = [None] * self.initial_size
 
     def __len__(self) -> int:
-        return self.length
+        return self._length
+
+    @property
+    def length(self) -> Any:
+        return self._length
 
     def __repr__(self) -> str:
-        return ", ".join([str(node) for node in self.hash_table])
+        return ", ".join([str(node) for node in self._hash_table])
 
-    def calculate_index(self, hash_value: int) -> int:
-        return hash_value % len(self.hash_table)
+    def _index(self, hash_value: int) -> int:
+        return hash_value % len(self._hash_table)
 
     @staticmethod
-    def calculate_hash(key: Any) -> int:
+    def _hash(key: Any) -> int:
         return hash(key)
 
     def __setitem__(self, key: Any, value: Any) -> None:
-        hash_value: int = self.calculate_hash(key)
-        index = self.calculate_index(hash_value)
-        if self.hash_table[index]:
-            if self.hash_table[index].key == key:
-                self.hash_table[index].value = value
+        hash_value: int = self._hash(key)
+        index = self._index(hash_value)
+        if self._hash_table[index]:
+            if self._hash_table[index].key == key:
+                self._hash_table[index].value = value
                 return
-            for node in self.hash_table:
+            for node in self._hash_table:
                 if node and node.key == key:
                     node.value = value
                     return
-        if int(self.load_factor * len(self.hash_table)) == self.length:
-            temp_table = self.hash_table[:]
-            self.hash_table: list \
-                = [None] * self.growth_factor * len(self.hash_table)
-            self.length = 0
+        if int(self.load_factor * len(self._hash_table)) == self.length:
+            temp_table = self._hash_table
+            self._hash_table: list \
+                = [None] * self.growth_factor * len(self._hash_table)
+            self._length = 0
             for cell in temp_table:
                 if cell:
                     self.__setitem__(cell.key, cell.value)
-        if self.hash_table[index]:
+        if self._hash_table[index]:
             empty_cells = []
-            for ind, node in enumerate(self.hash_table):
+            for ind, node in enumerate(self._hash_table):
                 if not node:
                     empty_cells.append(ind)
             index = choice(empty_cells)
-        self.hash_table[index] = Node(key, value, hash_value)
-        self.length += 1
+        self._hash_table[index] = Node(key, value, hash_value)
+        self._length += 1
 
     def __getitem__(self, key: Any) -> Any:
-        hash_value: int = self.calculate_hash(key)
+        hash_value: int = self._hash(key)
         for index in (
-                self.calculate_index(hash_value), *range(len(self.hash_table))
+                self._index(hash_value), *range(len(self._hash_table))
         ):
-            if self.hash_table[index] and self.hash_table[index].key == key:
-                return self.hash_table[index].value
+            if self._hash_table[index] and self._hash_table[index].key == key:
+                return self._hash_table[index].value
         raise KeyError(f"{key}")
 
     def __delitem__(self, key: Any) -> None:
-        hash_value: int = self.calculate_hash(key)
+        hash_value: int = self._hash(key)
         for index in (
-                self.calculate_index(hash_value), *range(len(self.hash_table))
+                self._index(hash_value), *range(len(self._hash_table))
         ):
-            if self.hash_table[index] and self.hash_table[index].key == key:
-                self.hash_table[index] = None
-                self.length -= 1
+            if self._hash_table[index] and self._hash_table[index].key == key:
+                self._hash_table[index] = None
+                self._length -= 1
                 return
         raise KeyError(f"{key}")
 
@@ -124,9 +128,9 @@ class Dictionary:
 
     def __next__(self) -> Node:
         while True:
-            if self.iter_index >= len(self.hash_table):
+            if self.iter_index >= len(self._hash_table):
                 raise StopIteration
-            next_node = self.hash_table[self.iter_index]
+            next_node = self._hash_table[self.iter_index]
             self.iter_index += 1
             if next_node:
                 break

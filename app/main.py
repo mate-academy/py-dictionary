@@ -5,10 +5,10 @@ from typing import Any
 
 
 class Node:
-    def __init__(self, key: Any, value: Any, hash_value: int = None) -> None:
+    def __init__(self, key: Any, value: Any, hash_value: int) -> None:
         self._key = key
         self._value = value
-        self._hash_value = hash(key) if not hash_value else hash_value
+        self._hash_value = hash_value
 
     @property
     def key(self) -> Any:
@@ -31,7 +31,7 @@ class Node:
         return self._hash_value
 
     def __repr__(self) -> str:
-        return f"{self._key} (#{self._hash_value}): {self._value}"
+        return f"{self._key}: {self._value}"
 
 
 class Dictionary:
@@ -51,7 +51,9 @@ class Dictionary:
         return self._length
 
     def __repr__(self) -> str:
-        return ", ".join([str(node) for node in self._hash_table])
+        return "{" + ", ".join(
+            [str(node) for node in self._hash_table if node]
+        ) + "}"
 
     def _index(self, hash_value: int) -> int:
         return hash_value % len(self._hash_table)
@@ -79,6 +81,7 @@ class Dictionary:
             for cell in temp_table:
                 if cell:
                     self.__setitem__(cell.key, cell.value)
+            index = self._index(hash_value)
         if self._hash_table[index]:
             empty_cells = []
             for ind, node in enumerate(self._hash_table):

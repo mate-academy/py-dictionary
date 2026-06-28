@@ -100,6 +100,7 @@ class Dictionary:
         ):
             if self.hash_table[index] and self.hash_table[index].key == key:
                 self.hash_table[index] = None
+                self.length -= 1
                 return
         raise KeyError(f"{key}")
 

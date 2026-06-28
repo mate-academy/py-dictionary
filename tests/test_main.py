@@ -17,7 +17,7 @@ def test_deletion():
     assert len(dictionary) == len(items)
     for key, value in items:
         del dictionary[key]
-    print(len(dictionary))
+    assert len(dictionary) == 0
 
 
 @pytest.mark.parametrize(

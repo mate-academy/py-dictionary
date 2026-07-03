@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from random import choice
-from typing import Any
+from typing import Any, Iterator
 
 
 class Node:
@@ -46,10 +46,6 @@ class Dictionary:
     def __len__(self) -> int:
         return self._length
 
-    @property
-    def length(self) -> Any:
-        return self._length
-
     def __repr__(self) -> str:
         return "{" + ", ".join(
             [str(node) for node in self._hash_table if node]
@@ -73,7 +69,7 @@ class Dictionary:
                 if node and node.key == key:
                     node.value = value
                     return
-        if int(self.load_factor * len(self._hash_table)) == self.length:
+        if int(self.load_factor * len(self._hash_table)) == self._length:
             temp_table = self._hash_table
             self._hash_table: list \
                 = [None] * self.growth_factor * len(self._hash_table)
@@ -125,19 +121,10 @@ class Dictionary:
         except KeyError:
             return default_value
 
-    def __iter__(self) -> Dictionary:
-        self.iter_index = 0
-        return self
-
-    def __next__(self) -> Node:
-        while True:
-            if self.iter_index >= len(self._hash_table):
-                raise StopIteration
-            next_node = self._hash_table[self.iter_index]
-            self.iter_index += 1
-            if next_node:
-                break
-        return next_node
+    def __iter__(self) -> Iterator[Node]:
+        for cell in self._hash_table:
+            if cell:
+                yield cell
 
     def update(self, *keys_values: tuple | list) -> None:
         for key, value in keys_values:

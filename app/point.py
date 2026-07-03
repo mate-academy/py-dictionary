@@ -58,3 +58,10 @@ if __name__ == "__main__":
         print(item)
     dictionary.update(*pairs[5:])
     print(dictionary)
+    print("My dictionary NxN")
+    for item1 in dictionary:
+        for item2 in dictionary:
+            print(item1, item2)
+    for item in dictionary:
+        item.value = 2
+    print(dictionary)

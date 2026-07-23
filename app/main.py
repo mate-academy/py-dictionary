@@ -41,7 +41,7 @@ class Dictionary:
         for node in self.buckets[current_index]:
             if node._key == key:
                 return node._value
-        raise KeyError(key)
+        raise KeyError(f"Key '{key}' not found")
 
     def __len__(self) -> int:
         return self.size

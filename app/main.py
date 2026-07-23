@@ -1,6 +1,7 @@
 from typing import Any
 
 
+# Additional class
 class Node:
     def __init__(self, key: Any, value: Any, key_hash: int) -> None:
         self._key = key

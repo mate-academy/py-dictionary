@@ -9,14 +9,17 @@ class Dictionary:
     def __setitem__(self, key, value) -> None:
         hash_key = hash(key)
         index_key = hash_key % len(self.hash_table)
-        if self.hash_table[index_key] is None:
-            self.hash_table[index_key] = (key, hash_key, value)
-        else:
+        while self.hash_table[index_key] is not None:
             if self.hash_table[index_key][0] == key:
                 self.hash_table[index_key] = (key, hash_key, value)
+                return
             else:
-                while self.hash_table[index_key] is not None:
-                    self.hash_table[index_key + 1] = (key, hash_key, value)
+                index_key = (index_key + 1) % len(self.hash_table)
+        self.hash_table[index_key] = (key, hash_key, value)
+        self.length += 1
+        if
+
+
 
     def __getitem__(self, key):
 

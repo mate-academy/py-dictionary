@@ -56,6 +56,9 @@ class Dictionary:
             print("y:", key.y)
             print("hash:", hash((key.x, key.y)))
             print("Cell:", hash((key.x, key.y)) % self.len_hash_table)
+        else:
+            print("hash:", hash(key))
+            print("Cell:", hash(key) % self.len_hash_table)
         print("Picked key:", self.hash_table[cell][0])
         if self.hash_table[cell][0] != key:
             starting_point = cell

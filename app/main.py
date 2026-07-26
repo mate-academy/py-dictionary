@@ -1,7 +1,4 @@
-from decimal import Decimal
-
 from typing import Any
-from app.point import Point
 
 
 class Dictionary:
@@ -42,7 +39,6 @@ class Dictionary:
                 self.hash_table[cell][0] = key
                 self.hash_table[cell][1] = value
                 break
-                
 
     def __getitem__(self, key: Any) -> Any:
         # Starting point
@@ -61,7 +57,7 @@ class Dictionary:
     def __len__(self) -> int:
         num = 0
         for i in self.hash_table:
-            if i[0] != None:
+            if i[0] is not None:
                 num += 1
         return num
 

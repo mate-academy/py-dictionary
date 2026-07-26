@@ -28,7 +28,6 @@ class Dictionary:
             self.hash_table = new_hash_table
 
     def __setitem__(self, key: Any, value: Any) -> None:
-        #print("__setitem__")
         cell = hash(key) % self.len_hash_table
         while True:
             if self.hash_table[cell][0] is not None:
@@ -46,20 +45,9 @@ class Dictionary:
                 
 
     def __getitem__(self, key: Any) -> Any:
-        print("__getitem__")
         # Starting point
         cell = hash(key) % self.len_hash_table
         # First key check just in case
-        print("Given key:", key)
-        if isinstance(key, Point):
-            print("x:", key.x)
-            print("y:", key.y)
-            print("hash:", hash((key.x, key.y)))
-            print("Cell:", hash((key.x, key.y)) % self.len_hash_table)
-        else:
-            print("hash:", hash(key))
-            print("Cell:", hash(key) % self.len_hash_table)
-        print("Picked key:", self.hash_table[cell][0])
         if self.hash_table[cell][0] != key:
             starting_point = cell
             while True:

@@ -12,7 +12,7 @@ class Dictionary:
     def __init__(self) -> None:
         self.capacity = 8
         self.table = [None] * self.capacity
-        self.size = 0
+        self.length = 0
 
     def __setitem__(self, key: Any, value: Any) -> None:
         _hash = hash(key)
@@ -27,8 +27,8 @@ class Dictionary:
             index = (index + 1) % self.capacity
 
         self.table[index] = Node(key, _hash, value)
-        self.size += 1
-        if self.size / self.capacity >= 0.7:
+        self.length += 1
+        if self.length / self.capacity >= 0.7:
             self._resize()
 
     def __getitem__(self, key: Any) -> object:
@@ -41,10 +41,10 @@ class Dictionary:
             if node.hash == _hash and node.key == key:
                 return node.value
             index = (index + 1) % self.capacity
-        raise KeyError(key)
+        raise KeyError(f"Key '{key}' not found")
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def _resize(self) -> None:
         old_table = self.table

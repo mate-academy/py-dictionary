@@ -63,14 +63,14 @@ class Dictionary:
 
         for _ in range(self.capacity):
             if self.nodes[index] is None:
-                raise KeyError(key)
+                raise KeyError(f"Key '{key}' not found in Dictionary")
 
             if self.nodes[index].key == key:
                 return index
 
             index = (index + 1) % self.capacity
 
-        raise KeyError(key)
+        raise KeyError(f"Key '{key}' not found in Dictionary")
 
     def increase_size(self) -> None:
         self.capacity *= 2

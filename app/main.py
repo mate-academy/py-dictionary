@@ -16,7 +16,7 @@ class Dictionary:
 
     def __init__(self) -> None:
         self.capacity = self.INITIAL_CAPACITY
-        self.size = 0
+        self.length = 0
         self.hash_table: list[Node | None] = [None] * self.capacity
 
     def _get_index(self, key: Hashable, hash_: int) -> int:
@@ -31,22 +31,22 @@ class Dictionary:
     def _resize(self) -> None:
         old_nodes = [node for node in self.hash_table if node is not None]
         self.capacity *= self.RESIZE_MULTIPLIER
-        self.size = 0
+        self.length = 0
         self.hash_table = [None] * self.capacity
         for node in old_nodes:
             index = self._get_index(node.key, node.hash_)
             self.hash_table[index] = node
-            self.size += 1
+            self.length += 1
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
         hash_ = hash(key)
         index = self._get_index(key, hash_)
         if self.hash_table[index] is None:
-            if (self.size + 1) > self.capacity * self.LOAD_FACTOR:
+            if (self.length + 1) > self.capacity * self.LOAD_FACTOR:
                 self._resize()
                 index = self._get_index(key, hash_)
             self.hash_table[index] = Node(key, hash_, value)
-            self.size += 1
+            self.length += 1
         else:
             self.hash_table[index].value = value
 
@@ -54,8 +54,8 @@ class Dictionary:
         hash_ = hash(key)
         index = self._get_index(key, hash_)
         if self.hash_table[index] is None:
-            raise KeyError(key)
+            raise KeyError(f"Key '{key}' not found")
         return self.hash_table[index].value
 
     def __len__(self) -> int:
-        return self.size
+        return self.length

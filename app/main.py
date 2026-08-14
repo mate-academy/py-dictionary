@@ -11,7 +11,7 @@ class Node:
 class Dictionary:
     def __init__(self) -> None:
         self.capacity = 8
-        self.size = 0
+        self.length = 0
         self.load_factor = 0.7
         self.table = [[] for _ in range(self.capacity)]
 
@@ -26,9 +26,9 @@ class Dictionary:
                 return
 
         bucket.append(Node(key, key_hash, value))
-        self.size += 1
+        self.length += 1
 
-        if self.size / self.capacity > self.load_factor:
+        if self.length / self.capacity > self.load_factor:
             self._resize()
 
     def __getitem__(self, key: Any) -> Any:
@@ -40,10 +40,10 @@ class Dictionary:
             if node.hash == key_hash and node.key == key:
                 return node.value
 
-        raise KeyError(key)
+        raise KeyError(f"Key {key} not found")
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def _get_index(self, key_hash: int) -> int:
         return key_hash % self.capacity

@@ -13,8 +13,8 @@ class Dictionary:
     def __setitem__(self, key: str, value: str) -> None:
         index = self._hash(key)
         # Шукаємо ключ у списку
-        for i, (stored_key, _, stored_hash) in enumerate(self.hash_table[index]):
-            if stored_hash == hash(key) and stored_key == key:
+        for i, (sto_key, _, sto_hash) in enumerate(self.hash_table[index]):
+            if sto_hash == hash(key) and sto_key == key:
                 self.hash_table[index][i] = (key, value, hash(key))
                 return
         # Ключа немає — додаємо
@@ -26,4 +26,4 @@ class Dictionary:
         for stored_key, stored_value, stored_hash in self.hash_table[index]:
             if stored_hash == hash(key) and stored_key == key:
                 return stored_value
-        raise KeyError(f'Key {key} not found')
+        raise KeyError(f"Key {key} not found")

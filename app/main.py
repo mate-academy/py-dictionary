@@ -54,7 +54,10 @@ class Dictionary:
         return self._length
 
     def __iter__(self):
-        pass
+        for element in self._elements:
+            if element is None or element is self._deleted:
+                continue
+            yield element.key
 
     def get(self, key, default=None) -> Any:
         try:

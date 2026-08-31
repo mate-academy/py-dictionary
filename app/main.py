@@ -12,6 +12,7 @@ class Node:
 class Dictionary:
 
     _threshold_coef = 2 / 3
+    _deleted = object()
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self._capacity = 8
@@ -23,7 +24,7 @@ class Dictionary:
         hash_key = hash(key)
         index = self._get_index(key, hash_key)
 
-        if self._elements[index] is None:
+        if self._elements[index] is None or self._elements[index] is self._deleted:
             self._length += 1
         self._elements[index] = Node(key, hash_key, value)
 
@@ -34,9 +35,19 @@ class Dictionary:
         hash_key = hash(key)
         index = self._get_index(key, hash_key)
 
-        if self._elements[index] is None:
+        if self._elements[index] is None or self._elements[index] is self._deleted:
             raise KeyError
         return self._elements[index].value
+
+    def __delitem__(self, key) -> None:
+        hash_key = hash(key)
+        index = self._get_index(key, hash_key)
+
+        if self._elements[index] is None or self._elements[index] is self._deleted:
+            raise KeyError
+
+        self._length -= 1
+        self._elements[index] = self._deleted
 
     def __len__(self):
         return self._length
@@ -44,7 +55,11 @@ class Dictionary:
     def _get_index(self, key: Any, hash_key: Any) -> int:
         index = hash_key % self._capacity
 
-        while self._elements[index] is not None and self._elements[index].key != key:
+        while (
+                self._elements[index] is not None
+                and self._elements[index] is not self._deleted
+                and self._elements[index].key != key
+        ):
             index += 1
             if index >= self._capacity:
                 index %= self._capacity
@@ -60,21 +75,9 @@ class Dictionary:
         self._length = 0
 
         for element in elements_copy:
-            if element is None:
+            if element is None or element is self._deleted:
                 continue
             self[element.key] = element.value
 
-
-
-d = Dictionary()
-for i in range(20):
-    d[f"key{i}"] = i
-
-print(len(d))          # 20
-print(d["key5"])       # 5
-print(d._capacity)     # 32
-
-try:
-    d["nope"]
-except KeyError:
-    print("KeyError")
+    def clear(self) -> None:
+        self.__init__()

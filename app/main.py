@@ -5,7 +5,7 @@ from typing import Any
 @dataclasses.dataclass
 class Node:
     key: Any
-    hash: int
+    hash_key: int
     value: Any
 
 
@@ -25,47 +25,56 @@ class Dictionary:
         hash_key = hash(key)
         index = self._get_index(key, hash_key)
 
-        if self._elements[index] is None or self._elements[index] is self._deleted:
+        if (
+                self._elements[index] is None
+                or self._elements[index] is self._deleted
+        ):
             self._length += 1
         self._elements[index] = Node(key, hash_key, value)
 
         if self._length >= self._threshold:
             self._resize()
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         hash_key = hash(key)
         index = self._get_index(key, hash_key)
 
-        if self._elements[index] is None or self._elements[index] is self._deleted:
+        if (
+                self._elements[index] is None
+                or self._elements[index] is self._deleted
+        ):
             raise KeyError
         return self._elements[index].value
 
-    def __delitem__(self, key) -> None:
+    def __delitem__(self, key: Any) -> None:
         hash_key = hash(key)
         index = self._get_index(key, hash_key)
 
-        if self._elements[index] is None or self._elements[index] is self._deleted:
+        if (
+                self._elements[index] is None
+                or self._elements[index] is self._deleted
+        ):
             raise KeyError
 
         self._length -= 1
         self._elements[index] = self._deleted
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._length
 
-    def __iter__(self):
+    def __iter__(self) -> Any:
         for element in self._elements:
             if element is None or element is self._deleted:
                 continue
             yield element.key
 
-    def get(self, key, default=None) -> Any:
+    def get(self, key: Any, default: Any = None) -> Any:
         try:
             return self.__getitem__(key)
         except KeyError:
             return default
 
-    def pop(self, key, default=_default) -> Any:
+    def pop(self, key: Any, default: Any = _default) -> Any:
         try:
             value = self.__getitem__(key)
             self.__delitem__(key)
@@ -110,4 +119,3 @@ class Dictionary:
             if element is None or element is self._deleted:
                 continue
             self[element.key] = element.value
-

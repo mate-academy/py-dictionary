@@ -13,6 +13,7 @@ class Dictionary:
 
     _threshold_coef = 2 / 3
     _deleted = object()
+    _default = object()
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self._capacity = 8
@@ -52,6 +53,25 @@ class Dictionary:
     def __len__(self):
         return self._length
 
+    def get(self, key, default=None) -> Any:
+        try:
+            return self.__getitem__(key)
+        except KeyError:
+            return default
+
+    def pop(self, key, default=_default) -> Any:
+        try:
+            value = self.__getitem__(key)
+            self.__delitem__(key)
+            return value
+        except KeyError:
+            if default is self._default:
+                raise
+            return default
+
+    def clear(self) -> None:
+        self.__init__()
+
     def _get_index(self, key: Any, hash_key: Any) -> int:
         index = hash_key % self._capacity
 
@@ -79,5 +99,3 @@ class Dictionary:
                 continue
             self[element.key] = element.value
 
-    def clear(self) -> None:
-        self.__init__()

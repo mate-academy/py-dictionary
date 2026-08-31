@@ -27,6 +27,9 @@ class Dictionary:
             self._length += 1
         self._elements[index] = Node(key, hash_key, value)
 
+        if self._length >= self._threshold:
+            self._resize()
+
     def __getitem__(self, key):
         hash_key = hash(key)
         index = self._get_index(key, hash_key)
@@ -48,11 +51,30 @@ class Dictionary:
 
         return index
 
+    def _resize(self) -> None:
+        self._capacity *= 2
+        self._threshold = round(self._capacity * Dictionary._threshold_coef)
+
+        elements_copy = self._elements.copy()
+        self._elements = [None] * self._capacity
+        self._length = 0
+
+        for element in elements_copy:
+            if element is None:
+                continue
+            self[element.key] = element.value
+
 
 
 d = Dictionary()
-d["a"] = 1
-d["b"] = 2
-d["a"] = 100
-print(d._elements)
-print(d["a"])
+for i in range(20):
+    d[f"key{i}"] = i
+
+print(len(d))          # 20
+print(d["key5"])       # 5
+print(d._capacity)     # 32
+
+try:
+    d["nope"]
+except KeyError:
+    print("KeyError")

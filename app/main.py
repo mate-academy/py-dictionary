@@ -53,6 +53,9 @@ class Dictionary:
     def __len__(self):
         return self._length
 
+    def __iter__(self):
+        pass
+
     def get(self, key, default=None) -> Any:
         try:
             return self.__getitem__(key)
@@ -68,6 +71,12 @@ class Dictionary:
             if default is self._default:
                 raise
             return default
+
+    def update(self, other: Dictionary) -> None:
+        for element in other._elements:
+            if element is None or element is self._deleted:
+                continue
+            self[element.key] = element.value
 
     def clear(self) -> None:
         self.__init__()

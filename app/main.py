@@ -19,16 +19,19 @@ class Dictionary:
 
     def __setitem__(self, key: Any, value: Any) -> None:
         hash_val = hash(key)
-        index = self._find_index(key, hash_val)
-        node = self.hash_table[index]
-        if node is not None and node.key == key:
-            node.value = value
-            return
-        if node is None:
-            self._resize_if_needed()
-            index = self._find_index(key, hash_val)
-            self.hash_table[index] = Node(key, hash_val, value)
-            self.length += 1
+        index = hash_val % len(self.hash_table)
+        while self.hash_table[index] is not None:
+            node = self.hash_table[index]
+            if node.key == key:
+                node.value = value
+                return
+            index = (index + 1) % len(self.hash_table)
+        self._resize_if_needed()
+        index = hash_val % len(self.hash_table)
+        while self.hash_table[index] is not None:
+            index = (index + 1) % len(self.hash_table)
+        self.hash_table[index] = Node(key, hash_val, value)
+        self.length += 1
 
     def __getitem__(self, key: Any) -> Any:
         hash_val = hash(key)
@@ -42,16 +45,13 @@ class Dictionary:
         old_table = self.hash_table
         new_size = len(self.hash_table) * 2
         self.hash_table = [None] * new_size
-        for place in old_table:
-            if place is None:
+        for node in old_table:
+            if node is None:
                 continue
-            index = place.hash_value % len(self.hash_table)
-            if self.hash_table[index] is None:
-                self.hash_table[index] = place
-            else:
-                while self.hash_table[index] is not None:
-                    index = (index + 1) % len(self.hash_table)
-                self.hash_table[index] = place
+            index = node.hash_value % len(self.hash_table)
+            while self.hash_table[index] is not None:
+                index = (index + 1) % len(self.hash_table)
+            self.hash_table[index] = node
 
     def _load_factor(self) -> float:
         return self.length / len(self.hash_table)
@@ -62,10 +62,11 @@ class Dictionary:
 
     def _find_index(self, key: Any, hash_val: int) -> int:
         index = hash_val % len(self.hash_table)
-        node = self.hash_table[index]
-        while node is not None and node.key != key:
+        while (
+            self.hash_table[index] is not None
+            and self.hash_table[index].key != key
+        ):
             index = (index + 1) % len(self.hash_table)
-            node = self.hash_table[index]
         return index
 
     def clear(self) -> None:

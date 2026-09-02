@@ -100,13 +100,14 @@ class Dictionary:
     def update(self, *args, **kwargs) -> None:
         if len(args) > 1:
             raise TypeError("update expected at most 1 argument, got 2")
-        to_update = args[0]
-        if hasattr(to_update, "keys"):
-            for key in to_update.keys():
-                self[key] = to_update[key]
-        else:
-            for key, value in to_update:
-                self[key] = value
+        if args:
+            to_update = args[0]
+            if hasattr(to_update, "keys"):
+                for key in to_update.keys():
+                    self[key] = to_update[key]
+            else:
+                for key, value in to_update:
+                    self[key] = value
 
         if kwargs:
             for key, value in kwargs.items():

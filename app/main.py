@@ -36,9 +36,7 @@ class Dictionary:
         key_hash = hash(key)
         key_index = self.index_found(key)
         for node in self.hash_table[key_index]:
-            if node._hash != key_hash:
-                continue
-            if node.key == key:
+            if node._hash == key_hash and node.key == key:
                 node.value = value
                 return
         self.hash_table[key_index].append(

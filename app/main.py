@@ -153,6 +153,18 @@ class Dictionary:
                 tuple[Hashable, Any]] | None = None,
             **kwargs: Any
     ) -> None:
+        """Оновлює словник парами ключ-значення з іншого об'єкта або kwargs.
+
+        Перевантаження (@overload) додані для автодоповнення в IDE
+        та щоб flake8 / тайп-чекери не видавали помилок через гнучкі типи.
+
+        Args:
+            other: Словник (Mapping) або ітерований об'єкт пар (key, value).
+            **kwargs: Додаткові пари ключ-значення, передані як аргументи.
+
+        Raises:
+            TypeError: Якщо тип `other` не підтримується для ітерації.
+        """
         if other is not None:
             if isinstance(other, Mapping) or hasattr(other, "keys"):
                 for key in other.keys():

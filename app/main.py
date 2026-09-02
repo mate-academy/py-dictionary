@@ -58,3 +58,8 @@ class Dictionary:
 
     def __len__(self) -> int:
         return self.length
+
+    def clear(self) -> None:
+        self.length = 0
+        self.hash_table_size = 8
+        self.hash_table = [[] for _ in range(self.hash_table_size)]

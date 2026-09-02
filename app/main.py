@@ -5,7 +5,9 @@ from typing import Any, Iterable, Hashable, Iterator
 class DeletedNode:
     pass
 
+
 _MISSING = object()
+
 
 @dataclass
 class Node:

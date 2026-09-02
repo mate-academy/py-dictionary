@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Hashable
-
-from pygments.lexers import other
+from typing import Any, Hashable, Iterator
 
 
 @dataclass
@@ -112,3 +110,8 @@ class Dictionary:
         if kwargs:
             for key, value in kwargs.items():
                 self[key] = value
+
+    def __iter__(self) -> Iterator[Hashable]:
+        for bucket in self.hash_table:
+            for node in bucket:
+                yield node.key

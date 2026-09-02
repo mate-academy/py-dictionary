@@ -32,9 +32,10 @@ class Dictionary:
     def __setitem__(self, key: Hashable, value: Any) -> None:
         if (self.length + 1) / self.hash_table_size >= Dictionary.load_factor:
             self._resize()
+        key_hash = hash(key)
         key_index = self.index_found(key)
         for node in self.hash_table[key_index]:
-            if node._hash != hash(key):
+            if node._hash != key_hash:
                 continue
             if node.key == key:
                 node.value = value
@@ -43,15 +44,16 @@ class Dictionary:
             Node(
                 key=key,
                 value=value,
-                _hash=hash(key)
+                _hash=key_hash
             )
         )
         self.length += 1
 
     def __getitem__(self, key: Hashable) -> Any:
+        key_hash = hash(key)
         key_index = self.index_found(key)
         for node in self.hash_table[key_index]:
-            if node._hash == hash(key):
+            if node._hash == key_hash:
                 if node.key == key:
                     return node.value
         raise KeyError(key)
@@ -63,3 +65,14 @@ class Dictionary:
         self.length = 0
         self.hash_table_size = 8
         self.hash_table = [[] for _ in range(self.hash_table_size)]
+
+    def __delitem__(self, key: Hashable) -> None:
+        key_hash = hash(key)
+        key_index = self.index_found(key)
+        for index, node in enumerate(self.hash_table[key_index]):
+            if node._hash == key_hash:
+                if node.key == key:
+                    del self.hash_table[key_index][index]
+                    self.length -= 1
+                    return
+        raise KeyError(key)

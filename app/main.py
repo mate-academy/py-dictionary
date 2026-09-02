@@ -76,3 +76,9 @@ class Dictionary:
                     self.length -= 1
                     return
         raise KeyError(key)
+
+    def get(self, key: Hashable, default: Any = None) -> Any:
+        try:
+            return self[key]
+        except KeyError:
+            return default

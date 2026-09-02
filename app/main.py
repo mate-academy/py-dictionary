@@ -39,7 +39,7 @@ class Dictionary:
         _, _, node = self._find(key)
         if node is not None:
             return node.value
-        raise KeyError(key)
+        raise KeyError(f"Key {key!r} is not found in dictionary.")
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
         """Додає нову пару ключ-значення або оновлює
@@ -78,7 +78,7 @@ class Dictionary:
             bucket.pop(i)
             self.size -= 1
             return
-        raise KeyError(key)
+        raise KeyError(f"Key {key!r} is not found in dictionary.")
 
     def get(self, key: Hashable, default: Any = None) -> Any:
         """Повертає значення за ключем, або значення за замовчуванням
@@ -100,7 +100,7 @@ class Dictionary:
             return value
         if default is not ...:
             return default
-        raise KeyError(key)
+        raise KeyError(f"Key {key!r} is not found in dictionary.")
 
     def __iter__(self) -> Iterator[Hashable]:
         """Повертає ітератор, який послідовно

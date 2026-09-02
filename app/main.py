@@ -7,7 +7,7 @@ _SENTINEL = object()
 @dataclass
 class Node:
     key: Hashable
-    hash: int
+    hash_r: int
     value: Any
 
 
@@ -29,7 +29,9 @@ class Dictionary:
                 node.value = value
                 return
 
-        self.hash_table[index].append(Node(key=key, hash=key_hash, value=value))
+        self.hash_table[index].append(
+            Node(key=key, hash_r=key_hash, value=value)
+        )
         self.length += 1
 
         if self.length / len(self.hash_table) >= self.max_load_factor:

@@ -10,7 +10,8 @@ class Node:
 
 
 class Dictionary:
-    load_factor = 2 / 3
+    _MISSING = object()
+    _load_factor = 2 / 3
 
     def __init__(self, hash_table_size: int = 8) -> None:
         self.hash_table_size = hash_table_size
@@ -30,7 +31,7 @@ class Dictionary:
         self.hash_table = self.new_hash_table
 
     def __setitem__(self, key: Hashable, value: Any) -> None:
-        if (self.length + 1) / self.hash_table_size >= Dictionary.load_factor:
+        if (self.length + 1) / self.hash_table_size >= Dictionary._load_factor:
             self._resize()
         key_hash = hash(key)
         key_index = self.index_found(key)
@@ -82,3 +83,14 @@ class Dictionary:
             return self[key]
         except KeyError:
             return default
+
+    def pop(self, key: Hashable, default: Any = _MISSING):
+        try:
+            temp = self[key]
+            del self[key]
+            return temp
+        except KeyError:
+            if default is Dictionary._MISSING:
+                raise KeyError(key)
+            else:
+                return default

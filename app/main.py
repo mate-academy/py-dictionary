@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Hashable
 
+from pygments.lexers import other
+
 
 @dataclass
 class Node:
@@ -84,7 +86,7 @@ class Dictionary:
         except KeyError:
             return default
 
-    def pop(self, key: Hashable, default: Any = _MISSING):
+    def pop(self, key: Hashable, default: Any = _MISSING) -> Any:
         try:
             temp = self[key]
             del self[key]
@@ -94,3 +96,18 @@ class Dictionary:
                 raise KeyError(key)
             else:
                 return default
+
+    def update(self, *args, **kwargs) -> None:
+        if len(args) > 1:
+            raise TypeError("update expected at most 1 argument, got 2")
+        to_update = args[0]
+        if hasattr(to_update, "keys"):
+            for key in to_update.keys():
+                self[key] = to_update[key]
+        else:
+            for key, value in to_update:
+                self[key] = value
+
+        if kwargs:
+            for key, value in kwargs.items():
+                self[key] = value

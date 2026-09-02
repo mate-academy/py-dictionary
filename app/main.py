@@ -5,6 +5,7 @@ from typing import Any, Iterable, Hashable, Iterator
 class DeletedNode:
     pass
 
+_MISSING = object()
 
 @dataclass
 class Node:
@@ -89,12 +90,13 @@ class Dictionary:
             current_node_index = self.hash_array[_index]
             if current_node_index < 0:
                 raise KeyError(f"Key not found: {key}")
-            current_node = self.ordered_data[current_node_index]
-            if current_node.hashcode == _hash and current_node.key == key:
-                self.hash_array[_index] = -2
-                self.ordered_data[current_node_index] = DeletedNode()
-                self.count -= 1
-                return
+            if current_node_index != -2:
+                current_node = self.ordered_data[current_node_index]
+                if current_node.hashcode == _hash and current_node.key == key:
+                    self.hash_array[_index] = -2
+                    self.ordered_data[current_node_index] = DeletedNode()
+                    self.count -= 1
+                    return
             _index += 1
             if _index == self.capacity:
                 _index = 0
@@ -104,13 +106,16 @@ class Dictionary:
             if not isinstance(node, DeletedNode):
                 yield node.key
 
-    def pop(self, key: Any, default: Any = None) -> Any:
-        value = self.get(key, default)
-        if value is None:
-            raise KeyError(f"Key not found: {key}")
-        if value != default:
+    def pop(self, key: Any, default: Any = _MISSING) -> Any:
+        try:
+            value = self[key]
             del self[key]
-        return value
+            return value
+        except KeyError:
+            if default is _MISSING:
+                raise
+            else:
+                return default
 
     def update(self, *args: Iterable, **kwargs: Any) -> None:
         if args:

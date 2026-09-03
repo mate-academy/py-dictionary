@@ -39,7 +39,7 @@ class Dictionary:
                 self.dictionary[new_index] = (key, hash(key), value)
                 break
 
-    def __getitem__(self, key: int) -> None:
+    def __getitem__(self, key: int) -> int:
         index = hash(key) % self.capacity
         for i in range(self.capacity):
             new_index = (index + i) % self.capacity

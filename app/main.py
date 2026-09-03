@@ -4,10 +4,10 @@ class Dictionary:
         self.capacity = 8
         self.dictionary = [None] * self.capacity
         self.load_factor = 2 / 3
-        self.size = 0
+        self.length = 0
 
     def __setitem__(self, key: int, value: int) -> None:
-        if self.size / self.capacity > self.load_factor:
+        if self.length / self.capacity > self.load_factor:
             self.capacity = self.capacity * 2
             self.new_dictionary = [None] * self.capacity
             for element in self.dictionary:
@@ -33,7 +33,7 @@ class Dictionary:
             new_index = (index + i) % self.capacity
             if self.dictionary[new_index] is None:
                 self.dictionary[new_index] = (key, hash(key), value)
-                self.size = self.size + 1
+                self.length = self.length + 1
                 break
             if self.dictionary[new_index][0] == key:
                 self.dictionary[new_index] = (key, hash(key), value)
@@ -50,7 +50,7 @@ class Dictionary:
                     and key != self.dictionary[new_index][0]):
                 continue
             else:
-                raise KeyError(key)
+                raise KeyError(f"Key {key} not found")
 
     def __len__(self) -> int:
-        return self.size
+        return self.length

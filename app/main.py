@@ -5,10 +5,10 @@ class Dictionary:
     def __init__(self) -> None:
         self.capacity = 8
         self.table = [[] for _ in range(self.capacity)]
-        self.size = 0
+        self.length = 0
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def __setitem__(self, key: Any, value: Any) -> None:
         key_hash = hash(key)
@@ -28,7 +28,7 @@ class Dictionary:
 
             counter += 1
 
-        if self.size >= round(self.capacity * 0.66):
+        if self.length >= round(self.capacity * 0.66):
             old_table = self.table
             self.capacity *= 2
             self.table = [[] for _ in range(self.capacity)]
@@ -60,7 +60,7 @@ class Dictionary:
             (slot + counter) % self.capacity
         ].append((key, key_hash, value))
 
-        self.size += 1
+        self.length += 1
 
     def __getitem__(self, key: Any) -> Any:
         key_hash = hash(key)

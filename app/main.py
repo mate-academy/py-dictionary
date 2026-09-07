@@ -7,7 +7,7 @@ class Dictionary:
         self.table = [[] for _ in range(self.capacity)]
         self.size = 0
 
-    def __len__(self) -> None:
+    def __len__(self) -> int:
         return self.size
 
     def __setitem__(self, key: Any, value: Any) -> None:
@@ -62,7 +62,7 @@ class Dictionary:
 
         self.size += 1
 
-    def __getitem__(self, key: Any) -> None:
+    def __getitem__(self, key: Any) -> Any:
         key_hash = hash(key)
         slot = key_hash % self.capacity
 
@@ -76,4 +76,4 @@ class Dictionary:
             if node[0][0] == key:
                 return node[0][2]
 
-        raise KeyError(key)
+        raise KeyError(f"Key '{key}' not found")

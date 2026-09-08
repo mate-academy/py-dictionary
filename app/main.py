@@ -48,3 +48,20 @@ class Dictionary:
 
     def __len__(self) -> int:
         return self.size
+
+    def __delitem__(self, key: Any) -> None:
+        index = hash(key) % self.capacity
+        node = self.table[index]
+        prev = None
+
+        while node:
+            if node.key == key:
+                if prev is None:
+                    self.table[index] = node.next
+                else:
+                    prev.next = node.next
+                self.size -= 1
+                return
+            prev = node
+            node = node.next
+        raise KeyError(f"key {key} not found")

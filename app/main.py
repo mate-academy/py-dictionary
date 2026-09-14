@@ -19,7 +19,7 @@ class Dictionary:
     ) -> None:
         self.capacity = initial_capacity
         self.load_factor = load_factor
-        self.size = 0
+        self.length = 0
         self.hash_table: list[Node | None] = [None] * self.capacity
 
     def _get_index(self, key: object) -> int:
@@ -42,9 +42,9 @@ class Dictionary:
         new_node = Node(key, value, key_hash)
         new_node.next = self.hash_table[index]
         self.hash_table[index] = new_node
-        self.size += 1
+        self.length += 1
 
-        if self.size > self.capacity * self.load_factor:
+        if self.length > self.capacity * self.load_factor:
             self._resize()
 
     def __getitem__(self, key: object) -> object:
@@ -62,22 +62,22 @@ class Dictionary:
 
     def __len__(self) -> int:
         """Return the number of key-value pairs in the dictionary."""
-        return self.size
+        return self.length
 
     def _resize(self) -> None:
         """Resize the hash table to double its current capacity."""
         old_table = self.hash_table
         self.capacity *= 2
         self.hash_table = [None] * self.capacity
-        old_size = self.size
-        self.size = 0
+        old_length = self.length
+        self.length = 0
 
         for node in old_table:
             while node is not None:
                 self[node.key] = node.value
                 node = node.next
 
-        assert self.size == old_size
+        assert self.length == old_length
 
     def __delitem__(self, key: object) -> None:
         """Delete a key-value pair from the dictionary."""
@@ -92,7 +92,7 @@ class Dictionary:
                     self.hash_table[index] = node.next
                 else:
                     prev.next = node.next
-                self.size -= 1
+                self.length -= 1
                 return
             prev = node
             node = node.next
@@ -102,7 +102,7 @@ class Dictionary:
     def clear(self) -> None:
         """Remove all key-value pairs from the dictionary."""
         self.hash_table = [None] * self.capacity
-        self.size = 0
+        self.length = 0
 
     def get(self, key: object, default: object = None) -> object:
         """Return the value for a key if it exists, else return default."""

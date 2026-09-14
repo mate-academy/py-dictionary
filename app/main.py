@@ -1,3 +1,6 @@
+_NO_DEFAULT = object()
+
+
 class Node:
     """Node for storing key-value pairs in the hash table."""
 
@@ -108,14 +111,13 @@ class Dictionary:
         except KeyError:
             return default
 
-    def pop(self, key: object, default: object = None) -> object:
-        """Remove a key-value pair and return its value."""
+    def pop(self, key: object, default: object = _NO_DEFAULT) -> object:
         try:
             value = self[key]
             del self[key]
             return value
         except KeyError:
-            if default is not None:
+            if default is not _NO_DEFAULT:
                 return default
             raise KeyError(f"Key '{key}' not found")
 

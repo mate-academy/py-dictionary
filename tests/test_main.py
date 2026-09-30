@@ -6,18 +6,18 @@ from app.main import Dictionary
 from app.point import Point
 
 
-# @pytest.mark.timeout(5)
-# def test_deletion():
-#     items = [(f"Element {i}", i) for i in range(1000)]
-#     dictionary = Dictionary()
-#     for key, value in items:
-#         dictionary[key] = value
-#     for key, value in items:
-#         assert dictionary[key] == value
-#     assert len(dictionary) == len(items)
-#     for key, value in items:
-#         del dictionary[key]
-#     print(len(dictionary))
+@pytest.mark.timeout(5)
+def test_deletion():
+    items = [(f"Element {i}", i) for i in range(1000)]
+    dictionary = Dictionary()
+    for key, value in items:
+        dictionary[key] = value
+    for key, value in items:
+        assert dictionary[key] == value
+    assert len(dictionary) == len(items)
+    for key, value in items:
+        del dictionary[key]
+    print(len(dictionary))
 
 
 @pytest.mark.parametrize(

@@ -5,7 +5,7 @@ from typing import Any
 @dataclass
 class Node:
     key: Any
-    hash: int
+    key_hash: int
     value: Any
 
 
@@ -21,7 +21,7 @@ class Dictionary:
         while self._table[index] is not None:
             node = self._table[index]
 
-            if node.hash == key_hash and (
+            if node.key_hash == key_hash and (
                 node.key is key or node.key == key
             ):
                 return index
@@ -37,7 +37,7 @@ class Dictionary:
 
         for node in old_table:
             if node is not None:
-                index = self._find_slot(node.key, node.hash)
+                index = self._find_slot(node.key, node.key_hash)
                 self._table[index] = node
 
     def __setitem__(self, key: Any, value: Any) -> None:

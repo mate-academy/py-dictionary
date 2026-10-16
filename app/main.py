@@ -40,7 +40,7 @@ class Dictionary:
             index = (index + 1) % len(self.table)
             node = self.table[index]
         if node is None:
-            raise KeyError(key)
+            raise KeyError(f"Key '{key}' not found")
         return node.value
 
     def _resize(self) -> None:

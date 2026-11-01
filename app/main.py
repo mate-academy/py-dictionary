@@ -19,7 +19,7 @@ class Dictionary:
     ) -> None:
         self._capacity = capacity
         self._load_factor = load_factor
-        self._size = 0
+        self.length = 0
         self._table: list = [None] * capacity
 
     def _find_index(self, key: Hashable, key_hash: int) -> int:
@@ -47,29 +47,29 @@ class Dictionary:
             self._table[index].value = value
             return
 
-        if self._size + 1 > self._capacity * self._load_factor:
+        if self.length + 1 > self._capacity * self._load_factor:
             self._resize()
             index = self._find_index(key, key_hash)
 
         self._table[index] = Node(key, key_hash, value)
-        self._size += 1
+        self.length += 1
 
     def __getitem__(self, key: Hashable) -> Any:
         index = self._find_index(key, hash(key))
         if self._table[index] is None:
-            raise KeyError(key)
+            raise KeyError(f"Key {key} not found")
         return self._table[index].value
 
     def __len__(self) -> int:
-        return self._size
+        return self.length
 
     def __delitem__(self, key: Hashable) -> None:
         index = self._find_index(key, hash(key))
         if self._table[index] is None:
-            raise KeyError(key)
+            raise KeyError(f"Key {key} not found")
 
         self._table[index] = None
-        self._size -= 1
+        self.length -= 1
 
         next_index = (index + 1) % self._capacity
         while self._table[next_index] is not None:
@@ -113,7 +113,7 @@ class Dictionary:
 
     def clear(self) -> None:
         self._table = [None] * self._capacity
-        self._size = 0
+        self.length = 0
 
     def update(self, other: Any) -> None:
         if hasattr(other, "keys") or isinstance(other, Dictionary):

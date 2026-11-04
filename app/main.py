@@ -12,6 +12,13 @@ class Dictionary:
         self.threshold = int(self.current_capacity * 2 / 3)
         self.size: int = 0
 
+    def _get_target_ceil_index(self, index_current: int, key: Any) -> int:  # TO DO correct types annotation, replace any.
+        index_current = (index_current + 1) % self.current_capacity  # linear billing
+        while (self.hash_table[index_current] is not None
+               and self.hash_table[index_current][0] != key):
+            index_current = (index_current + 1) % self.current_capacity
+        return index_current
+
     def _resize(self, new_key, new_value, hash_key) -> None:  # TO DO ARGS ACTUAL KEY ...
 
         temporary_obj = copy.copy(self.hash_table)
@@ -53,11 +60,7 @@ class Dictionary:
                 hash_key
             ]
         elif self.hash_table[index_current][0] != key:  # if in the same key we found not the same key we should find
-            # a free ceil or the same key...
-            index_current = (index_current + 1) % self.current_capacity  # linear billing
-            while (self.hash_table[index_current] is not None
-                   and self.hash_table[index_current][0] != key):
-                index_current = (index_current + 1) % self.current_capacity
+            index_current = self._get_target_ceil_index(index_current, key)
 
             if self.hash_table[index_current] is None:
                 if self.size < self.threshold:
@@ -89,24 +92,19 @@ class Dictionary:
         if isinstance(item, (dict, set, list)):  # we check the type of the object
             raise KeyError(f"{item}: unhashable type")
 
-        key = item
-        hash_key = hash(key)
+        hash_key = hash(item)
         index_current = int(hash_key % self.current_capacity)
 
         if self.hash_table[index_current] is None:
-            raise KeyError(f"{key}")
-        elif self.hash_table[index_current][0] == key:
+            raise KeyError(f"{item}")
+        elif self.hash_table[index_current][0] == item:
             return self.hash_table[index_current][1]
-        elif self.hash_table[index_current][0] != key:
-            index_current = (index_current + 1) % self.current_capacity  # linear billing
-
-            while (self.hash_table[index_current] is not None
-                   and self.hash_table[index_current][0] != key):
-                index_current = (index_current + 1) % self.current_capacity
+        elif self.hash_table[index_current][0] != item:
+            index_current = self._get_target_ceil_index(index_current, item)
 
             if self.hash_table[index_current] is None:
-                raise KeyError(f"{key}")
-            elif self.hash_table[index_current][0] == key:
+                raise KeyError(f"{item}")
+            elif self.hash_table[index_current][0] == item:
                 return self.hash_table[index_current][1]
 
     def __len__(self) -> int:

@@ -3,7 +3,7 @@ from typing import Any
 
 class Dictionary:
     def __init__(self) -> None:
-        self.size = 0
+        self.length = 0
         self.capacity = 8
         self.threshold = int(self.capacity * 2 / 3)
         self.hash_table: list = [None] * self.capacity
@@ -18,41 +18,41 @@ class Dictionary:
             index = (index + 1) % self.capacity
 
         if self.hash_table[index] is None:
-            self.size += 1
+            self.length += 1
 
-        self.hash_table[index] = (key, value)
+        self.hash_table[index] = (key, hash(key), value)
 
-        if self.size >= self.threshold:
+        if self.length >= self.threshold:
             self.resize()
 
     def __getitem__(self, key: Any) -> Any:
         index = self.hash_function(key)
 
-        for _ in range(self.capacity):
+        for _ in range(self.length):
             items = self.hash_table[index]
 
             if items is None:
                 break
 
             if items[0] == key:
-                return items[1]
+                return items[2]
 
             index = (index + 1) % self.capacity
 
-        raise KeyError(key)
+        raise KeyError(f"Key '{key}' not found")
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def hash_function(self, value: Any) -> int:
         return hash(value) % self.capacity
 
     def resize(self) -> None:
-        self.size = 0
+        self.length = 0
         old_table = self.hash_table[:]
         self.capacity *= 2
         self.threshold = int(self.capacity * 2 / 3)
         self.hash_table = [None] * self.capacity
         for items in old_table:
             if items is not None:
-                self.__setitem__(*items)
+                self.__setitem__(items[0], items[2])

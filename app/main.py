@@ -20,7 +20,7 @@ class Dictionary:
     def __init__(self) -> None:
         self.capacity = INITIAL_CAPACITY
         self.load_factor = LOAD_FACTOR
-        self.size = 0
+        self.length = 0
         self.deleted_count = 0
         self.hash_table: list[Any] = [None] * self.capacity
 
@@ -31,7 +31,7 @@ class Dictionary:
             self.hash_table[index].value = value
             return
 
-        used_slots = self.size + self.deleted_count + 1
+        used_slots = self.length + self.deleted_count + 1
         if used_slots > self.capacity * self.load_factor:
             self._resize()
 
@@ -41,21 +41,21 @@ class Dictionary:
         index = self._find_index(key)
 
         if index is None:
-            raise KeyError(key)
+            raise KeyError(f"Key {key} not found")
 
         return self.hash_table[index].value
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def __delitem__(self, key: Any) -> None:
         index = self._find_index(key)
 
         if index is None:
-            raise KeyError(key)
+            raise KeyError(f"Key {key} not found")
 
         self.hash_table[index] = DELETED
-        self.size -= 1
+        self.length -= 1
         self.deleted_count += 1
 
     def __iter__(self) -> Iterator[Any]:
@@ -65,7 +65,7 @@ class Dictionary:
 
     def clear(self) -> None:
         self.capacity = INITIAL_CAPACITY
-        self.size = 0
+        self.length = 0
         self.deleted_count = 0
         self.hash_table = [None] * self.capacity
 
@@ -82,7 +82,7 @@ class Dictionary:
 
         if index is None:
             if default is MISSING:
-                raise KeyError(key)
+                raise KeyError(f"Key {key} not found")
             return default
 
         removed_value = self.hash_table[index].value
@@ -132,14 +132,14 @@ class Dictionary:
             self.deleted_count -= 1
 
         self.hash_table[index] = node
-        self.size += 1
+        self.length += 1
 
     def _resize(self) -> None:
         old_table = self.hash_table
 
         self.capacity *= RESIZE_MULTIPLIER
         self.hash_table = [None] * self.capacity
-        self.size = 0
+        self.length = 0
         self.deleted_count = 0
 
         for node in old_table:

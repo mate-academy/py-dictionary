@@ -14,9 +14,7 @@ class Node:
 class Dictionary:
     def __init__(self, capacity: int = 8) -> None:
         self.capacity = capacity
-        # Alterado: self.table -> self.hash_table
         self.hash_table: list[Node | None] = [None] * capacity
-        # Alterado: self.size -> self.length
         self.length = 0
 
     def _index_calculator(self, hash_key: int) -> int:
@@ -66,7 +64,7 @@ class Dictionary:
             curr_index = (curr_index + 1) % self.capacity
             attempts += 1
 
-        raise KeyError(key)
+        raise KeyError(f"Key {key} not found")
 
     def _resize(self) -> None:
         old_table = self.hash_table

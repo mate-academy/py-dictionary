@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
+
 
 class Node:
     def __init__(self, key: object, hash_value: int, value: object) -> None:
@@ -14,6 +16,14 @@ class Dictionary:
         capacity: int = 8,
         load_factor: float = 0.75,
     ) -> None:
+        if capacity <= 0:
+            raise ValueError("capacity must be greater than zero")
+
+        if not 0 < load_factor < 1:
+            raise ValueError(
+                "load_factor must be greater than zero and less than one"
+            )
+
         self.capacity = capacity
         self.load_factor = load_factor
         self.size = 0
@@ -23,7 +33,7 @@ class Dictionary:
         hash_value = hash(key)
         index = hash_value % self.capacity
 
-        while True:
+        for _ in range(self.capacity):
             node = self.hash_table[index]
 
             if node is None:
@@ -41,20 +51,25 @@ class Dictionary:
 
             index = (index + 1) % self.capacity
 
+        self._resize()
+        self[key] = value
+
     def __getitem__(self, key: object) -> object:
         hash_value = hash(key)
         index = hash_value % self.capacity
 
-        while True:
+        for _ in range(self.capacity):
             node = self.hash_table[index]
 
             if node is None:
-                raise KeyError(key)
+                break
 
             if node.hash == hash_value and node.key == key:
                 return node.value
 
             index = (index + 1) % self.capacity
+
+        raise KeyError(key)
 
     def __len__(self) -> int:
         return self.size
@@ -67,7 +82,7 @@ class Dictionary:
 
         return True
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[object]:
         for node in self.hash_table:
             if node is not None:
                 yield node.key
@@ -76,11 +91,11 @@ class Dictionary:
         hash_value = hash(key)
         index = hash_value % self.capacity
 
-        while True:
+        for _ in range(self.capacity):
             node = self.hash_table[index]
 
             if node is None:
-                raise KeyError(key)
+                break
 
             if node.hash == hash_value and node.key == key:
                 self.hash_table[index] = None
@@ -89,6 +104,8 @@ class Dictionary:
                 return
 
             index = (index + 1) % self.capacity
+
+        raise KeyError(key)
 
     def _rehash_cluster(self, index: int) -> None:
         while self.hash_table[index] is not None:
@@ -133,8 +150,6 @@ class Dictionary:
             self[key] = value
 
     def clear(self) -> None:
-        self.capacity = 8
-        self.load_factor = 0.75
         self.size = 0
         self.hash_table = [None] * self.capacity
 

@@ -10,6 +10,13 @@ class Node:
         self.value = value
 
 
+class _Tombstone:
+    pass
+
+
+_TOMBSTONE = _Tombstone()
+
+
 class Dictionary:
     def __init__(
         self,
@@ -27,17 +34,25 @@ class Dictionary:
         self.capacity = capacity
         self.load_factor = load_factor
         self.size = 0
-        self.hash_table: list[Node | None] = [None] * capacity
+        self.hash_table: list[Node | _Tombstone | None] = [None] * capacity
 
     def __setitem__(self, key: object, value: object) -> None:
         hash_value = hash(key)
         index = hash_value % self.capacity
+        first_deleted: int | None = None
 
         for _ in range(self.capacity):
             node = self.hash_table[index]
 
             if node is None:
-                self.hash_table[index] = Node(key, hash_value, value)
+                target_index = (
+                    first_deleted if first_deleted is not None else index
+                )
+                self.hash_table[target_index] = Node(
+                    key,
+                    hash_value,
+                    value,
+                )
                 self.size += 1
 
                 if self.size / self.capacity > self.load_factor:
@@ -45,11 +60,19 @@ class Dictionary:
 
                 return
 
-            if node.hash == hash_value and node.key == key:
+            if isinstance(node, _Tombstone):
+                if first_deleted is None:
+                    first_deleted = index
+            elif node.hash == hash_value and node.key == key:
                 node.value = value
                 return
 
             index = (index + 1) % self.capacity
+
+        if first_deleted is not None:
+            self.hash_table[first_deleted] = Node(key, hash_value, value)
+            self.size += 1
+            return
 
         self._resize()
         self[key] = value
@@ -64,8 +87,9 @@ class Dictionary:
             if node is None:
                 break
 
-            if node.hash == hash_value and node.key == key:
-                return node.value
+            if not isinstance(node, _Tombstone):
+                if node.hash == hash_value and node.key == key:
+                    return node.value
 
             index = (index + 1) % self.capacity
 
@@ -84,7 +108,7 @@ class Dictionary:
 
     def __iter__(self) -> Iterator[object]:
         for node in self.hash_table:
-            if node is not None:
+            if node is not None and not isinstance(node, _Tombstone):
                 yield node.key
 
     def __delitem__(self, key: object) -> None:
@@ -97,23 +121,15 @@ class Dictionary:
             if node is None:
                 break
 
-            if node.hash == hash_value and node.key == key:
-                self.hash_table[index] = None
-                self.size -= 1
-                self._rehash_cluster((index + 1) % self.capacity)
-                return
+            if not isinstance(node, _Tombstone):
+                if node.hash == hash_value and node.key == key:
+                    self.hash_table[index] = _TOMBSTONE
+                    self.size -= 1
+                    return
 
             index = (index + 1) % self.capacity
 
         raise KeyError(key)
-
-    def _rehash_cluster(self, index: int) -> None:
-        while self.hash_table[index] is not None:
-            node = self.hash_table[index]
-            self.hash_table[index] = None
-            self.size -= 1
-            self[node.key] = node.value
-            index = (index + 1) % self.capacity
 
     def get(self, key: object, default: object = None) -> object:
         try:
@@ -160,5 +176,13 @@ class Dictionary:
         self.size = 0
 
         for node in old_table:
-            if node is not None:
-                self[node.key] = node.value
+            if node is None or isinstance(node, _Tombstone):
+                continue
+
+            index = node.hash % self.capacity
+
+            while self.hash_table[index] is not None:
+                index = (index + 1) % self.capacity
+
+            self.hash_table[index] = node
+            self.size += 1

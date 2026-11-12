@@ -14,7 +14,7 @@ class Dictionary:
     ) -> None:
         self.capacity = initial_capacity
         self.load_factor = load_factor
-        self.size = 0
+        self.length = 0
         self.table: list[list[Node]] = [[] for _ in range(self.capacity)]
 
     def _get_index(self, hash_val: int) -> int:
@@ -24,7 +24,7 @@ class Dictionary:
         old_table = self.table
         self.capacity *= 2
         self.table = [[] for _ in range(self.capacity)]
-        self.size = 0
+        self.length = 0
 
         for bucket in old_table:
             for node in bucket:
@@ -40,9 +40,9 @@ class Dictionary:
                 return
 
         self.table[index].append(Node(key, hash_val, value))
-        self.size += 1
+        self.length += 1
 
-        if self.size / self.capacity >= self.load_factor:
+        if self.length / self.capacity >= self.load_factor:
             self._resize()
 
     def __getitem__(self, key: Any) -> Any:
@@ -56,7 +56,7 @@ class Dictionary:
         raise KeyError(key)
 
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def __delitem__(self, key: Any) -> None:
         hash_val = hash(key)
@@ -65,7 +65,7 @@ class Dictionary:
         for i, node in enumerate(self.table[index]):
             if node.hash == hash_val and node.key == key:
                 del self.table[index][i]
-                self.size -= 1
+                self.length -= 1
                 return
         raise KeyError(key)
 
@@ -76,7 +76,7 @@ class Dictionary:
             return default
 
     def clear(self) -> None:
-        self.size = 0
+        self.length = 0
         self.table = [[] for _ in range(self.capacity)]
 
     def __iter__(self) -> Iterator[Any]:

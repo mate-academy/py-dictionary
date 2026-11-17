@@ -13,8 +13,7 @@ class Dictionary:
         self.capacity = 8
         self.hash_table = [None] * self.capacity
         self.threshold = 2 / 3
-        self.size = 0
-
+        self.length = 0
 
     def _find_index(self, key: Hashable, hash_num: int) -> int:
         index = hash_num % self.capacity
@@ -26,7 +25,6 @@ class Dictionary:
             index = (index + 1) % self.capacity
         return index
 
-
     def __setitem__(self, key: Hashable, value: Any) -> None:
         hash_num = hash(key)
         index = self._find_index(key, hash_num)
@@ -37,9 +35,8 @@ class Dictionary:
             return
 
         self.hash_table[index] = Node(key, value, hash_num)
-        self.size += 1
+        self.length += 1
         self.resize_and_rehash_if_necessary()
-
 
     def __getitem__(self, key: Hashable) -> Any:
         hash_num = hash(key)
@@ -50,12 +47,11 @@ class Dictionary:
         assert node is not None
         return node.value
 
-
     def __len__(self) -> int:
-        return self.size
+        return self.length
 
     def resize_and_rehash_if_necessary(self) -> None:
-        if self.size <= self.capacity * self.threshold:
+        if self.length <= self.capacity * self.threshold:
             return
         old_table = self.hash_table
         self.capacity *= 2

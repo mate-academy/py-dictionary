@@ -1,4 +1,4 @@
-from dataclasses import dataclass #crea una clase Dictionary personalizada que imita el comportamiento del dict de Python.
+from dataclasses import dataclass  # Creación de clas diccionario
 from typing import Any, Hashable, Iterator
 
 INITIAL_CAPACITY = 8
@@ -67,25 +67,37 @@ class Dictionary:
     def __len__(self) -> int:
         return self.length
 
+    @staticmethod
+    def _home_is_after_hole(home: int, hole: int, index: int) -> bool:
+        if hole <= index:
+            return hole < home <= index
+        return home > hole or home <= index
+
     def __delitem__(self, key: Hashable) -> None:
         size = len(self.hash_table)
-        index = self._find_slot(self.hash_table, key, hash(key))
+        hole = self._find_slot(self.hash_table, key, hash(key))
 
-        if self.hash_table[index] is None:
+        if self.hash_table[hole] is None:
             raise KeyError(f"Key {key!r} is not in the dictionary")
 
-        self.hash_table[index] = None
         self.length -= 1
+        index = hole
 
-        next_index = (index + 1) % size
-        while self.hash_table[next_index] is not None:
-            node = self.hash_table[next_index]
-            self.hash_table[next_index] = None
-            new_index = self._find_slot(
-                self.hash_table, node.key, node.key_hash
-            )
-            self.hash_table[new_index] = node
-            next_index = (next_index + 1) % size
+        while True:
+            index = (index + 1) % size
+            node = self.hash_table[index]
+
+            if node is None:
+                break
+
+            home = node.key_hash % size
+            if self._home_is_after_hole(home, hole, index):
+                continue
+
+            self.hash_table[hole] = node
+            hole = index
+
+        self.hash_table[hole] = None
 
     def get(self, key: Hashable, default: Any = None) -> Any:
         try:

@@ -62,7 +62,7 @@ class Dictionary:
             if index == start_index:
                 break
 
-        raise KeyError(key)
+        raise KeyError(f"Key not found: {key!r}")
 
     def __len__(self) -> int:
         return self.length

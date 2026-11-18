@@ -14,7 +14,7 @@ class Dictionary:
 
     def __init__(self) -> None:
         self.capacity = self.INITIAL_CAPACITY
-        self.size = 0
+        self.length = 0
         self.hash_table: list[Node | None] = [None] * self.capacity
 
     def _get_index(self, hash_value: int) -> int:
@@ -24,7 +24,7 @@ class Dictionary:
         old_table = self.hash_table
         self.capacity *= 2
         self.hash_table = [None] * self.capacity
-        self.size = 0
+        self.length = 0
 
         for node in old_table:
             if node is not None:
@@ -41,13 +41,13 @@ class Dictionary:
                 return
             index = (index + 1) % self.capacity
 
-        if (self.size + 1) > self.capacity * self.LOAD_FACTOR:
+        if (self.length + 1) > self.capacity * self.LOAD_FACTOR:
             self._resize()
             self[key] = value
             return
 
         self.hash_table[index] = Node(key, key_hash, value)
-        self.size += 1
+        self.length += 1
 
     def __getitem__(self, key: Any) -> Any:
         key_hash = hash(key)
@@ -65,4 +65,4 @@ class Dictionary:
         raise KeyError(key)
 
     def __len__(self) -> int:
-        return self.size
+        return self.length

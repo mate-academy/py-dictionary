@@ -14,12 +14,12 @@ class Dictionary:
             indx = (table_index + offset) % len(self.hash_table)
             entry = self.hash_table[indx]
             if entry is None:
-                self.hash_table[indx] = [value, key, indx]
+                self.hash_table[indx] = [value, key, hash(key)]
                 self.length += 1
                 self.resize_check()
                 break
             if entry[1] == key:
-                self.hash_table[indx] = [value, key, indx]
+                self.hash_table[indx] = [value, key, hash(key)]
                 break
             offset += 1
 

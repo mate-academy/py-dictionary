@@ -9,16 +9,17 @@ class Dictionary:
     def __setitem__(self, key: int, value: type) -> None:
         table_index = (hash(key) % len(self.hash_table))
         offset = 0
+
         for _ in range(len(self.hash_table)):
             indx = (table_index + offset) % len(self.hash_table)
             entry = self.hash_table[indx]
             if entry is None:
-                self.hash_table[indx] = [value, key]
+                self.hash_table[indx] = [value, key, indx]
                 self.length += 1
                 self.resize_check()
                 break
             if entry[1] == key:
-                self.hash_table[indx] = [value, key]
+                self.hash_table[indx] = [value, key, indx]
                 break
             offset += 1
 
@@ -26,16 +27,19 @@ class Dictionary:
         table_index = (hash(key) % len(self.hash_table))
 
         offset = 0
-        for _ in range(len(self.hash_table)):
-            indx = (table_index + offset) % len(self.hash_table)
-            entry = self.hash_table[indx]
-            if entry is None:
-                raise KeyError
-            if entry[1] == key:
-                return entry[0]
-            offset += 1
-            print("error")
-        raise KeyError
+        try:
+            for _ in range(len(self.hash_table)):
+                indx = (table_index + offset) % len(self.hash_table)
+                entry = self.hash_table[indx]
+                if entry is None:
+                    raise KeyError
+                if entry[1] == key:
+                    return entry[0]
+                offset += 1
+                print("error")
+            raise KeyError
+        except KeyError:
+            raise KeyError("File not found")
 
     def resize_check(self) -> None:
         bucket_size = len(self.hash_table)

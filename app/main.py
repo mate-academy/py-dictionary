@@ -36,7 +36,6 @@ class Dictionary:
                 if entry[1] == key:
                     return entry[0]
                 offset += 1
-                print("error")
             raise KeyError
         except KeyError:
             raise KeyError("File not found")

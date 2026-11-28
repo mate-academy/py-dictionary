@@ -70,7 +70,7 @@ class Dictionary:
         while True:
             current = self.table[slot]
             if current is None:
-                raise KeyError
+                raise KeyError(key)
             if current.key == key and current.hash == _hash:
                 return current.value
             slot = (slot + 1) % len(self.table)
@@ -81,6 +81,7 @@ class Dictionary:
     def clear(self) -> None:
         self.table = [None] * 8
         self.size = 0
+        self.tombstone_size = 0
 
     def get(self, key: Any, default: Any = None) -> Any:
         try:

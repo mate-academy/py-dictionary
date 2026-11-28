@@ -6,18 +6,20 @@ from app.main import Dictionary
 from app.point import Point
 
 
-# @pytest.mark.timeout(5)
-# def test_deletion():
-#     items = [(f"Element {i}", i) for i in range(1000)]
-#     dictionary = Dictionary()
-#     for key, value in items:
-#         dictionary[key] = value
-#     for key, value in items:
-#         assert dictionary[key] == value
-#     assert len(dictionary) == len(items)
-#     for key, value in items:
-#         del dictionary[key]
-#     print(len(dictionary))
+@pytest.mark.timeout(5)
+def test_deletion():
+    items = [(f"Element {i}", i) for i in range(1000)]
+    dictionary = Dictionary()
+    for key, value in items:
+        dictionary[key] = value
+    for key, value in items:
+        assert dictionary[key] == value
+    assert len(dictionary) == len(items)
+    for key, value in items:
+        del dictionary[key]
+    assert len(dictionary) == 0
+
+
 
 
 @pytest.mark.parametrize(
@@ -163,7 +165,6 @@ def test_dictionary_add_with_mocked_hash(
     for key, value in pairs_after_adding:
         assert dictionary[key] == value
     assert len(dictionary) == len(pairs_after_adding)
-
 
 @pytest.mark.timeout(5)
 def test_resize_bucket():
